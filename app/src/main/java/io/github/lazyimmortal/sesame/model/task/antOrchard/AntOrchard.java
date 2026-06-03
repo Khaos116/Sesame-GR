@@ -260,7 +260,7 @@ public class AntOrchard extends ModelTask {
                 String result = AntOrchardRpcCall.orchardListTask();
                 JSONObject jo = new JSONObject(result);
                 if (MessageUtil.checkResultCode(TAG, jo)) {
-                    JSONArray taskArray = jo.getJSONArray("taskList");
+                    JSONArray taskArray = jo.optJSONArray(MyUtils._OPT_TASKLIST);
                     for (int i = 0; i < taskArray.length(); i++) {
                         jo = taskArray.getJSONObject(i);
                         JSONObject displayConfig = jo.optJSONObject("taskDisplayConfig");
@@ -619,7 +619,7 @@ public class AntOrchard extends ModelTask {
             }
             
             // 处理任务列表
-            JSONArray taskArray = jo.getJSONArray("taskList");
+            JSONArray taskArray = jo.optJSONArray(MyUtils._OPT_TASKLIST);
             handleTaskList(taskArray);
             
             // 触发已完成任务的奖励
@@ -712,6 +712,9 @@ public class AntOrchard extends ModelTask {
                 return false;
             }
             String title = task.getJSONObject("taskDisplayConfig").getString("title");
+            if (MyUtils._关闭不支持RPC2 && "逛一逛一淘".equals(title)) {//CHANGE BY KT
+                return false;
+            }
             String actionType = task.getString("actionType");
             String sceneCode = task.optString("sceneCode");
             String taskId = task.optString("taskId");
@@ -788,7 +791,7 @@ public class AntOrchard extends ModelTask {
             JSONObject jo = new JSONObject(response);
             
             if (MessageUtil.checkResultCode(TAG, jo)) {
-                JSONArray taskList = jo.getJSONArray("taskList");
+                JSONArray taskList = jo.optJSONArray(MyUtils._OPT_TASKLIST);
                 for (int i = 0; i < taskList.length(); i++) {
                     JSONObject task = taskList.getJSONObject(i);
                     if (!"FINISHED".equals(task.getString("taskStatus"))) {
@@ -1049,7 +1052,7 @@ public class AntOrchard extends ModelTask {
             
             // 待完成任务
             if ("TO_DO_TASK".equals(status)) {
-                JSONArray tasks = currentInfo.getJSONArray("taskList");
+                JSONArray tasks = currentInfo.optJSONArray(MyUtils._OPT_TASKLIST);
                 handleTaskList(tasks);
                 querySubplotsActivity("CAMP_TAKEOVER"); // 重新查询状态
             }

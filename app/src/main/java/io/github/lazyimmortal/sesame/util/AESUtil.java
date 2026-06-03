@@ -90,7 +90,10 @@ public class AESUtil {
         return new String(decrypted, CHARSET);
     }
 
-    public static native String encryptData(String data);
+    public static String encryptData(String data) {//CHANGE BY KT
+        return data;
+    }
+
     private static String encryptData(String data, String key, String iv) {
         String result = null;
         try {
@@ -101,7 +104,10 @@ public class AESUtil {
         return result;
     }
 
-    public static native String decryptData(String data);
+    public static String decryptData(String data) {//CHANGE BY KT
+        return data;
+    }
+
     private static String decryptData(String data, String key, String iv) {
         String result = null;
         try {

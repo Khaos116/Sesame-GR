@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import io.github.lazyimmortal.sesame.util.MyUtils;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -609,7 +611,7 @@ public class AntForestV2 extends ModelTask {
                     if (!canConsumeAnimalProp) {
                         Log.record("已经有动物伙伴在巡护森林");
                     } else {
-                        queryAnimalPropList();
+                        if (!MyUtils.closeVerification()) queryAnimalPropList();
                     }
                 }
                 if (expiredEnergy.getValue()) {
@@ -620,7 +622,7 @@ public class AntForestV2 extends ModelTask {
                     queryTaskList();
                 }
 
-                giveProp();
+                if (!MyUtils.closeVerification()) giveProp();
                 if (vitalityExchangeBenefit.getValue()) {
                     vitalityExchangeBenefit();
                 }
@@ -869,7 +871,7 @@ public class AntForestV2 extends ModelTask {
             long start = System.currentTimeMillis();
             userHomeObject = new JSONObject(AntForestRpcCall.queryHomePage());
             long end = System.currentTimeMillis();
-            long serverTime = userHomeObject.getLong("now");
+            long serverTime = userHomeObject.optLong(MyUtils._OPT_NOW, System.currentTimeMillis());
             int offsetTime = offsetTimeMath.nextInteger((int) ((start + end) / 2 - serverTime));
             Log.i("服务器时间：" + serverTime + "，本地与服务器时间差：" + offsetTime);
             //兼容组队模式
@@ -905,7 +907,7 @@ public class AntForestV2 extends ModelTask {
             long start = System.currentTimeMillis();
             userHomeObject = new JSONObject(AntForestRpcCall.queryFriendHomePage(userId));
             long end = System.currentTimeMillis();
-            long serverTime = userHomeObject.getLong("now");
+            long serverTime = userHomeObject.optLong(MyUtils._OPT_NOW, System.currentTimeMillis());
             int offsetTime = offsetTimeMath.nextInteger((int) ((start + end) / 2 - serverTime));
             Log.i("服务器时间：" + serverTime + "，本地与服务器时间差：" + offsetTime);
         } catch (Throwable t) {
@@ -964,7 +966,7 @@ public class AntForestV2 extends ModelTask {
                 return userHomeObject;
             }
 
-            long serverTime = userHomeObject.getLong("now");
+            long serverTime = userHomeObject.optLong(MyUtils._OPT_NOW, System.currentTimeMillis());
             boolean isSelf = Objects.equals(userId, selfId);
             String userName;
             boolean isCollectEnergy;
@@ -1608,6 +1610,7 @@ public class AntForestV2 extends ModelTask {
      * 检查并处理6秒拼手速逻辑（每天主动执行一次）
      */
     private void whackMole() {
+        if (MyUtils.closeVerification()) return;
         try {
             if (whackModeName.getValue() == whackModeNames.CLOSE) {
                 // 检查今天是否已执行过打地鼠
@@ -2028,8 +2031,8 @@ public class AntForestV2 extends ModelTask {
                         break label;
                     case "WATERING_USER_LIMIT":
                         Log.record("好友浇水🚿给[" + UserIdMap.getMaskName(userId) + "]浇水，" + jo.getString("resultDesc"));
-                        wateredTimes = 3;
-                        break label;
+                        wateredTimes = 3;//直接按照已达上限处理
+                        break label;//CHANGE BY KT
                     default:
                         Log.record("好友浇水🚿" + jo.getString("resultDesc"));
                         Log.i(jo.toString());
@@ -2288,6 +2291,13 @@ public class AntForestV2 extends ModelTask {
     }
 
     private Boolean finishTask(String sceneCode, String taskType, String taskTitle) {
+        if (MyUtils.closeUnRpc() && "ANTFOREST_VITALITY_TASK".equals(sceneCode) && taskType != null) {
+            if (taskType.startsWith("GYG_BK_XYK")
+                    || taskType.startsWith("GYG_jinritoutiao")
+                    || taskType.startsWith("GYG_huabeikaitong")) {
+                return false;
+            }
+        }
         try {
             JSONObject jo = new JSONObject(AntForestRpcCall.finishTask(sceneCode, taskType));
             //检查并标记黑名单任务

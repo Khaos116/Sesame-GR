@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import io.github.lazyimmortal.sesame.R;
 import io.github.lazyimmortal.sesame.util.Log;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 
 public final class ViewAppInfo {
 
@@ -30,7 +31,8 @@ public final class ViewAppInfo {
     public static void init(Context context) {
         if (ViewAppInfo.context == null) {
             ViewAppInfo.context = context;
-            appTitle = context.getString(R.string.app_name);
+            appTitle = MyUtils.getAppTitleExt(context);
+            if (appTitle.isEmpty()) appTitle = context.getString(R.string.app_name);
             try {
                 PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
                 appVersion = packageInfo.versionName;

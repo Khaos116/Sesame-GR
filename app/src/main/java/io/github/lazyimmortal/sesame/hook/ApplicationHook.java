@@ -80,6 +80,7 @@ import io.github.lazyimmortal.sesame.util.PermissionUtil;
 import io.github.lazyimmortal.sesame.util.Statistics;
 import io.github.lazyimmortal.sesame.util.Status;
 import io.github.lazyimmortal.sesame.util.StringUtil;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 import io.github.lazyimmortal.sesame.util.TimeUtil;
 import io.github.lazyimmortal.sesame.util.idMap.UserIdMap;
 import lombok.Getter;
@@ -280,7 +281,7 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                         
                         Log.i(TAG, "Service onCreate");
                         context = appService.getApplicationContext();
-                        System.load(LibraryUtil.getLibSesamePath(context));
+                        //System.load(LibraryUtil.getLibSesamePath(context));//CHANGE BY KT
                         service = appService;
                         mainHandler = new Handler(Looper.getMainLooper());
                         mainTask = BaseTask.newInstance("MAIN_TASK", new Runnable() {
@@ -294,7 +295,9 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                                 }
                                 Log.record("应用版本：" + alipayVersion.getVersionString());
                                 Log.record("模块版本：" + modelVersion + "（交流更新QQ群：694474777）");
-                                Log.record("开始执行");
+                                String targetUid = getUserId();
+                                //Log.record("开始执行" + MyUtils.recordUserName(targetUid));
+                                Log.record("编译时间：" + BuildConfig.BUILD_TIME);//CHANGE BY KT
                                 try {
                                     int checkInterval = BaseModel.getCheckInterval().getValue();
                                     if (lastExecTime + 2000 > System.currentTimeMillis()) {
@@ -303,8 +306,8 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                                         return;
                                     }
                                     updateDay();
-                                    String targetUid = getUserId();
                                     String currentUid = UserIdMap.getCurrentUid();
+                                    Log.record("开始执行" + io.github.lazyimmortal.sesame.util.MyUtils.recordUserName(targetUid));//CHANGE BY KT
                                     if (targetUid == null || currentUid == null) {
                                         Log.record("用户为空，放弃执行");
                                         reLogin();
@@ -377,7 +380,7 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                                 }
                             }
                         });
-                        dayCalendar = Calendar.getInstance();
+                        dayCalendar = MyUtils.getInstance();
                         Statistics.load();
                         FriendWatch.load();
                         if (initHandler(true)) {
@@ -597,7 +600,7 @@ public class ApplicationHook implements IXposedHookLoadPackage {
             unsetWakenAtTimeAlarm();
             try {
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent("com.eg.android.AlipayGphone.sesame.execute"), getPendingIntentFlag());
-                Calendar calendar = Calendar.getInstance();
+                Calendar calendar = MyUtils.getInstance();
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 calendar.set(Calendar.HOUR_OF_DAY, 0);
                 calendar.set(Calendar.MINUTE, 0);
@@ -614,7 +617,7 @@ public class ApplicationHook implements IXposedHookLoadPackage {
             }
             List<String> wakenAtTimeList = BaseModel.getWakenAtTimeList().getValue();
             if (wakenAtTimeList != null && !wakenAtTimeList.isEmpty()) {
-                Calendar nowCalendar = Calendar.getInstance();
+                Calendar nowCalendar = MyUtils.getInstance();
                 for (int i = 1, len = wakenAtTimeList.size(); i < len; i++) {
                     try {
                         String wakenAtTime = wakenAtTimeList.get(i);
@@ -707,7 +710,7 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                 UserIdMap.initUser(userId);
                 Model.initAllModel();
                 Log.record("模块版本：" + modelVersion);
-                Log.record("开始加载");
+                Log.record("开始加载" + io.github.lazyimmortal.sesame.util.MyUtils.recordUserName(userId));//CHANGE BY KT
                 ConfigV2.load(userId);
                 
                 // 检查配置是否为默认配置，如果是则尝试从备份恢复

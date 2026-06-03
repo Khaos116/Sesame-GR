@@ -43,6 +43,7 @@ import io.github.lazyimmortal.sesame.util.Log;
 import io.github.lazyimmortal.sesame.util.PermissionUtil;
 import io.github.lazyimmortal.sesame.util.Statistics;
 import io.github.lazyimmortal.sesame.util.TimeUtil;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 import io.github.lazyimmortal.sesame.util.ToastUtil;
 import io.github.lazyimmortal.sesame.util.idMap.UserIdMap;
 
@@ -119,11 +120,13 @@ public class MainActivity extends BaseActivity {
         builder.setMessage(R.string.start_message);
         builder.setPositiveButton(R.string.btn_understood, (dialog, which) -> dialog.dismiss());
         AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        if (!MyUtils._关闭首页弹窗) alertDialog.show();//CHANGE BY KT
         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
         if (positiveButton != null) {
             positiveButton.setTextColor(ContextCompat.getColor(this, R.color.button));
         }
+        Button btn = findViewById(R.id.btn_other_log);//CHANGE BY KT
+        btn.setText(MyUtils.showHomeAllLog() ? R.string.view_record_file : R.string.other_log);//首页这显示全部
     }
     
     @Override
@@ -231,7 +234,17 @@ public class MainActivity extends BaseActivity {
             data += FileUtil.getFarmLogFile().getAbsolutePath();
         }
         else if (v.getId() == R.id.btn_other_log) {
-            data += FileUtil.getOtherLogFile().getAbsolutePath();
+            if (MyUtils.showHomeAllLog()) {//首页这显示全部 //CHANGE BY KT
+                String recordData = "file://";
+                recordData += FileUtil.getRecordLogFile().getAbsolutePath();
+                Intent recordIt = new Intent(this, HtmlViewerActivity.class);
+                recordIt.setData(Uri.parse(recordData));
+                recordIt.putExtra("canClear", true);
+                startActivity(recordIt);
+                return;
+            } else {
+                data += FileUtil.getOtherLogFile().getAbsolutePath();
+            }
         }
         else if (v.getId() == R.id.btn_friend_watch) {
             ListDialog.show(this, getString(R.string.friend_watch), FriendWatch.getList(), SelectModelFieldFunc.newMapInstance(), false, ListDialog.ListType.SHOW);
@@ -398,6 +411,7 @@ public class MainActivity extends BaseActivity {
     
     private void goSettingActivity(int index) {
         UserEntity userEntity = userEntityArray[index];
+        //CHANGE BY KT
         boolean isNewUI = AppConfig.INSTANCE.getNewUI() && !"TEST".equals(ViewAppInfo.getAppVersion()) && LibraryUtil.loadLibrary("sesame");
         Intent intent = new Intent(this, isNewUI ? NewSettingsActivity.class : SettingsActivity.class);
         if (userEntity != null) {

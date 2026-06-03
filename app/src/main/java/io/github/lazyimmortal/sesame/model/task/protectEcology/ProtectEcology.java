@@ -194,8 +194,8 @@ public class ProtectEcology extends ModelTask {
                 return;
             }
             String userId = UserIdMap.getCurrentUid();
-            JSONArray cooperatePlants = jo.getJSONArray("cooperatePlants");
-            for (int i = 0; i < cooperatePlants.length(); i++) {
+            JSONArray cooperatePlants = jo.optJSONArray("cooperatePlants");//CHANGE BY KT
+            if (cooperatePlants != null) for (int i = 0; i < cooperatePlants.length(); i++) {
                 jo = cooperatePlants.getJSONObject(i);
                 String cooperationId = jo.getString("cooperationId");
                 queryCooperatePlant(userId, cooperationId);
@@ -267,8 +267,8 @@ public class ProtectEcology extends ModelTask {
         try {
             JSONObject jo = new JSONObject(CooperateRpcCall.queryCooperateRank(bizType, cooperationId));
             if (MessageUtil.checkResultCode(TAG, jo)) {
-                JSONArray cooperateRankInfos = jo.getJSONArray("cooperateRankInfos");
-                for (int i = 0; i < cooperateRankInfos.length(); i++) {
+                JSONArray cooperateRankInfos = jo.optJSONArray("cooperateRankInfos");//CHANGE BY KT
+                if (cooperateRankInfos != null) for (int i = 0; i < cooperateRankInfos.length(); i++) {
                     jo = cooperateRankInfos.getJSONObject(i);
                     if (Objects.equals(userId, jo.getString("userId"))) {
                         return jo.optInt("energySummation");
@@ -369,7 +369,7 @@ public class ProtectEcology extends ModelTask {
             }
             String applyAction = jo.getString("applyAction");
             int currentEnergy = jo.getInt("currentEnergy");
-            JSONArray subTreeVOs = jo.getJSONArray("subTreeVOs");
+            JSONArray subTreeVOs = jo.optJSONArray("subTreeVOs");//CHANGE BY KT
             jo = jo.getJSONObject("exchangeableTree");
             exchangeableTree.certCount = jo.getInt("certCount");
             exchangeableTree.projectName = jo.getString("projectName");
@@ -587,7 +587,7 @@ public class ProtectEcology extends ModelTask {
         try {
             JSONObject jo = new JSONObject(ProtectOceanRpcCall.queryCultivationList());
             if (MessageUtil.checkResultCode(TAG, jo)) {
-                return jo.getJSONArray("cultivationItemVOList");
+                return jo.optJSONArray("cultivationItemVOList");//CHANGE BY KT
             }
         }
         catch (Throwable t) {
@@ -737,9 +737,9 @@ public class ProtectEcology extends ModelTask {
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return false;
             }
-            JSONArray awardInfos = jo.getJSONArray("rewardItemVOs");
+            JSONArray awardInfos = jo.optJSONArray("rewardItemVOs");//CHANGE BY KT
             StringBuilder award = new StringBuilder();
-            for (int i = 0; i < awardInfos.length(); i++) {
+            if (awardInfos != null) for (int i = 0; i < awardInfos.length(); i++) {
                 jo = awardInfos.getJSONObject(i);
                 if (i > 0) {
                     award.append(";");

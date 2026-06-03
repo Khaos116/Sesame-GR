@@ -8,6 +8,7 @@ import java.util.Objects;
 import io.github.lazyimmortal.sesame.model.extensions.ExtensionsHandle;
 import io.github.lazyimmortal.sesame.util.Log;
 import io.github.lazyimmortal.sesame.util.MessageUtil;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 import io.github.lazyimmortal.sesame.util.Status;
 import io.github.lazyimmortal.sesame.util.TimeUtil;
 
@@ -16,7 +17,11 @@ public class MerchantService {
 
     public static Boolean transcodeCheck() {
         try {
+            if (MyUtils.getSp功能异常(MyUtils._访问被拒绝1)) {
+                return false;
+            }
             JSONObject jo = new JSONObject(MerchantServiceRpcCall.transcodeCheck());
+            MyUtils.setSp功能异常(MyUtils._访问被拒绝1, jo);
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return false;
             } jo = jo.getJSONObject("data"); if (jo.optBoolean("isOpened")) {
@@ -55,7 +60,11 @@ public class MerchantService {
     public static void taskListQueryV2() {
         zcjSignIn(); ExtensionsHandle.handleAlphaRequest("merchantService", "doHideTask", null);
         try {
+            if (MyUtils.getSp功能异常(MyUtils._系统出错正在排查1)) {
+                return;
+            }
             JSONObject jo = new JSONObject(MerchantServiceRpcCall.taskListQueryV2());
+            MyUtils.setSp功能异常(MyUtils._系统出错正在排查1, jo);
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
             } jo = jo.getJSONObject("data"); JSONArray ja = jo.getJSONArray("moduleList");
@@ -63,7 +72,7 @@ public class MerchantService {
                 jo = ja.getJSONObject(i); if (!Objects.equals("MORE", jo.getString("planCode"))) {
                     // planCode: SERVICE MORE
                     continue;
-                } taskListProcessing(jo.getJSONArray("taskList"));
+                } taskListProcessing(jo.optJSONArray(MyUtils._OPT_TASKLIST));
             }
         } catch (Throwable t) {
             Log.i(TAG, "taskListQueryV2 err:"); Log.printStackTrace(TAG, t);

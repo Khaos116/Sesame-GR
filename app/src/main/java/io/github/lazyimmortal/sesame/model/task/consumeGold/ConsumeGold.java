@@ -8,6 +8,7 @@ import io.github.lazyimmortal.sesame.data.task.ModelTask;
 import io.github.lazyimmortal.sesame.data.RuntimeInfo;
 import io.github.lazyimmortal.sesame.model.base.TaskCommon;
 import io.github.lazyimmortal.sesame.util.Log;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 
 public class ConsumeGold extends ModelTask {
     private static final String TAG = ConsumeGold.class.getSimpleName();
@@ -39,7 +40,9 @@ public class ConsumeGold extends ModelTask {
     public void run() {
         try {
             RuntimeInfo.getInstance().put("consumeGold", System.currentTimeMillis());
-            signinCalendar();
+            if (!MyUtils.closeVerification()) {//CHANGE BY KT
+                signinCalendar();
+            }
             taskV2Index("CG_TASK_LIST");
             taskV2Index("HOME_NAVIGATION");
             taskV2Index("CG_SIGNIN_AD_FEEDS");
@@ -58,7 +61,8 @@ public class ConsumeGold extends ModelTask {
             String s = ConsumeGoldRpcCall.taskV2Index(taskSceneCode);
             JSONObject jo = new JSONObject(s);
             if (jo.optBoolean("success")) {
-                JSONArray taskList = jo.getJSONArray("taskList");
+                JSONArray taskList = jo.optJSONArray(MyUtils._OPT_TASKLIST);
+                if (taskList == null) taskList = new JSONArray();
                 for (int i = 0; i < taskList.length(); i++) {
                     jo = taskList.getJSONObject(i);
                     JSONObject extInfo = jo.getJSONObject("extInfo");
@@ -170,8 +174,12 @@ public class ConsumeGold extends ModelTask {
 
     private void signinCalendar() {
         try {
+            if (MyUtils.getSp功能异常(MyUtils._访问被拒绝3)) {
+                return;
+            }
             String s = ConsumeGoldRpcCall.signinCalendar();
             JSONObject jo = new JSONObject(s);
+            MyUtils.setSp功能异常(MyUtils._访问被拒绝3, jo);
             if (jo.optBoolean("success")) {
                 boolean signed = jo.getBoolean("isSignInToday");
                 if (!signed) {

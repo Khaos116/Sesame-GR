@@ -18,6 +18,7 @@ import io.github.lazyimmortal.sesame.hook.ApplicationHook;
 import io.github.lazyimmortal.sesame.model.base.TaskCommon;
 import io.github.lazyimmortal.sesame.model.extensions.ExtensionsHandle;
 import io.github.lazyimmortal.sesame.model.task.antOrchard.AntOrchardRpcCall;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 import io.github.lazyimmortal.sesame.util.*;
 import io.github.lazyimmortal.sesame.util.idMap.AntFarmDoFarmTaskListMap;
 import io.github.lazyimmortal.sesame.util.idMap.AntMemberTaskListMap;
@@ -155,7 +156,7 @@ public class AntMember extends ModelTask {
             //    AntInsurance.executeTask(antInsuranceOptions.getValue());
             //}
             // 消费金签到
-            if (signinCalendar.getValue()) {
+            if (signinCalendar.getValue() && !MyUtils.closeVerification()) {
                 signinCalendar();
             }
             if (enableGameCenter.getValue()) {
@@ -445,6 +446,7 @@ public class AntMember extends ModelTask {
     private void signPageTaskList() {
         try {
             do {
+                if (MyUtils._关闭人气太旺) return;
                 JSONObject jo = new JSONObject(AntMemberRpcCall.signPageTaskList());
                 TimeUtil.sleep(500);
                 boolean doubleCheck = false;
@@ -457,7 +459,8 @@ public class AntMember extends ModelTask {
                 JSONArray categoryTaskList = jo.getJSONArray("categoryTaskList");
                 for (int i = 0; i < categoryTaskList.length(); i++) {
                     jo = categoryTaskList.getJSONObject(i);
-                    JSONArray taskList = jo.getJSONArray("taskList");
+                    JSONArray taskList = jo.optJSONArray(MyUtils._OPT_TASKLIST);
+                    if (taskList == null) taskList = new JSONArray();
                     String type = jo.getString("type");
                     if (Objects.equals("BROWSE", type)) {
                         doubleCheck = doBrowseTask(taskList);
@@ -651,6 +654,9 @@ public class AntMember extends ModelTask {
                     bizParam = targetBusinessArray[1];
                     bizSubType = targetBusinessArray[0];
                 }
+                if (MyUtils._NO_SUPPORT_ANTMEMBER_NGFE_TAG__PTR3O4ERIU.equals(bizSubType)) {//CHANGE BY KT
+                    continue;
+                }
                 jo = new JSONObject(AntMemberRpcCall.executeTask(bizParam, bizSubType));
                 TimeUtil.sleep(300);
                 if (!MessageUtil.checkResultCode(TAG, jo)) {
@@ -670,6 +676,7 @@ public class AntMember extends ModelTask {
     
     private void goldTicket() {
         try {
+            if (MyUtils.closeErrorFunction()) return;
             // 签到
             //已失效
             //goldBillCollect("\"campId\":\"CP1417744\",\"directModeDisableCollect\":true,\"from\":\"antfarm\",");
@@ -1277,7 +1284,11 @@ public class AntMember extends ModelTask {
                     }
                     recordId = toCompleteVO.getString("recordId");
                 }
-                
+
+                if (MyUtils._不是有效的入参.contains(recordId)) {//CHANGE BY KT
+                    continue;
+                }
+
                 // 完成任务
                 for (int j = completedNum; j < needCompleteNum; j++) {
                     s = AntMemberRpcCall.finishSesameTask(recordId);
@@ -1505,7 +1516,11 @@ public class AntMember extends ModelTask {
     // 消费金签到
     private void signinCalendar() {
         try {
+            if (MyUtils.getSp功能异常(MyUtils._访问被拒绝2)) {
+                return;
+            }
             JSONObject jo = new JSONObject(AntMemberRpcCall.signinCalendar());
+            MyUtils.setSp功能异常(MyUtils._访问被拒绝2, jo);
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
             }

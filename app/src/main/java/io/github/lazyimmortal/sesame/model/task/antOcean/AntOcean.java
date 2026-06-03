@@ -20,6 +20,7 @@ import io.github.lazyimmortal.sesame.util.Log;
 import io.github.lazyimmortal.sesame.util.MessageUtil;
 import io.github.lazyimmortal.sesame.util.Statistics;
 import io.github.lazyimmortal.sesame.util.Status;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 import io.github.lazyimmortal.sesame.util.StringUtil;
 import io.github.lazyimmortal.sesame.util.TimeUtil;
 import io.github.lazyimmortal.sesame.util.idMap.AntFarmDoFarmTaskListMap;
@@ -881,6 +882,10 @@ public class AntOcean extends ModelTask {
             else if (taskTitle.startsWith("随机任务：") || taskTitle.startsWith("绿色任务：")) {
                 String sceneCode = task.getString("sceneCode");
                 String taskType = task.getString("taskType");
+                //[{"outBizNo":"mokuai_senlin_hydrw_0.xxx","requestType":"RPC","sceneCode":"ANTOCEAN_TASK","source":"ANTFOCEAN","taskType":"mokuai_senlin_hydrw"}]
+                if (MyUtils._关闭不支持RPC1 && "ANTOCEAN_TASK".equals(sceneCode) && "mokuai_senlin_hydrw".equals(taskType)) {
+                    return true;
+                }
                 JSONObject jo = new JSONObject(AntOceanRpcCall.finishTask(sceneCode, taskType));
                 //检查并标记黑名单任务
                 MessageUtil.checkResultCodeAndMarkTaskBlackList("AntOceanAntiepTaskList", taskTitle, jo);

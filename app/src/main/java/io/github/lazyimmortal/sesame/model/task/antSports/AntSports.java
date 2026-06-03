@@ -23,6 +23,7 @@ import io.github.lazyimmortal.sesame.data.modelFieldExt.IntegerModelField;
 import io.github.lazyimmortal.sesame.data.modelFieldExt.SelectModelField;
 import io.github.lazyimmortal.sesame.data.task.ModelTask;
 import io.github.lazyimmortal.sesame.entity.AlipayAntSportsTaskList;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 import io.github.lazyimmortal.sesame.entity.WalkPathThemeMapList;
 import io.github.lazyimmortal.sesame.entity.AlipayUser;
 import io.github.lazyimmortal.sesame.entity.WalkPath;
@@ -181,6 +182,10 @@ public class AntSports extends ModelTask {
                 //if (!Status.hasFlagToday("sport::syncStep")) {
                 addChildTask(new ChildModelTask("syncStep", () -> {
                     int step = tmpStepCount();
+                    if (MyUtils._关闭不存在的方法调用) {//看你没有这个方法哦//CHANGE BY KT
+                        Log.record("⚠️暂时不反射调用rpc.RpcManager#a()");
+                        return;
+                    }
                     try {
                         ClassLoader classLoader = ApplicationHook.getClassLoader();
                         if ((Boolean) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(classLoader.loadClass("com.alibaba.health.pedometer.intergation.rpc.RpcManager"), "a"), "a", new Object[]{step, Boolean.FALSE, "system"})) {
@@ -288,12 +293,12 @@ public class AntSports extends ModelTask {
                 AntSportsTaskListMap.add(task, task);
             }
             
-            if (sportsTasks) {
+            if (sportsTasks && !MyUtils._关闭必弹验证1) {
                 JSONObject jo = new JSONObject(AntSportsRpcCall.queryCoinTaskPanel());
                 if (MessageUtil.checkSuccess(TAG, jo)) {
                     jo = jo.getJSONObject("data");
                     if (jo.has("taskList")) {
-                        JSONArray taskLists = jo.getJSONArray("taskList");
+                        JSONArray taskLists = jo.optJSONArray(MyUtils._OPT_TASKLIST);
                         for (int i = 0; i < taskLists.length(); i++) {
                             JSONObject taskList = taskLists.getJSONObject(i);
                             String taskName = taskList.getString("taskName");
@@ -384,6 +389,7 @@ public class AntSports extends ModelTask {
     private void sportsTasks() {
         try {
             signInCoinTask();
+            if (MyUtils._关闭必弹验证2) return;
             JSONObject jo = new JSONObject(AntSportsRpcCall.queryCoinTaskPanel());
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
@@ -392,7 +398,7 @@ public class AntSports extends ModelTask {
             if (!jo.has("taskList")) {
                 return;
             }
-            JSONArray taskList = jo.getJSONArray("taskList");
+            JSONArray taskList = jo.optJSONArray(MyUtils._OPT_TASKLIST);
             for (int i = 0; i < taskList.length(); i++) {
                 jo = taskList.getJSONObject(i);
                 String taskName = jo.getString("taskName");
@@ -458,6 +464,7 @@ public class AntSports extends ModelTask {
     
     private Boolean completeTask(String taskAction, String taskId, String taskName) {
         try {
+            if (MyUtils._关闭必弹验证3 && "SHOW_AD".equals(taskAction) && "AP12300610".equals(taskId)) return false;
             JSONObject jo = new JSONObject(AntSportsRpcCall.completeTask(taskAction, taskId));
             //检查并标记黑名单任务
             MessageUtil.checkResultCodeAndMarkTaskBlackList("AntSportsTaskList", taskName, jo);
@@ -504,6 +511,7 @@ public class AntSports extends ModelTask {
     
     private void receiveCoinAsset() {
         try {
+            if (MyUtils._关闭必弹验证4) return;
             JSONObject jo = new JSONObject(AntSportsRpcCall.queryCoinBubbleModule());
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
@@ -1009,7 +1017,7 @@ public class AntSports extends ModelTask {
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return false;
             }
-            JSONArray userExchangeRecords = jo.getJSONArray("userExchangeRecords");
+            JSONArray userExchangeRecords = jo.optJSONArray(MyUtils._OPT_USER_EXCHANGE_RECORDS);
             if (userExchangeRecords.length() == 0) {
                 return true;
             }
