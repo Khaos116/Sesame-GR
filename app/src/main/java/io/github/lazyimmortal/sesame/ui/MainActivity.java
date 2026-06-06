@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.github.lazyimmortal.sesame.BuildConfig;
 import io.github.lazyimmortal.sesame.R;
 import io.github.lazyimmortal.sesame.data.AppConfig;
 import io.github.lazyimmortal.sesame.data.RunType;
@@ -74,6 +75,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         tvStatistics = findViewById(R.id.tv_statistics);
         ViewAppInfo.checkRunType();
+        setBaseSubtitle("编译时间: " + BuildConfig.BUILD_TIME);//CHANGE BY KT
         /*ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setIcon(R.drawable.title_logo);

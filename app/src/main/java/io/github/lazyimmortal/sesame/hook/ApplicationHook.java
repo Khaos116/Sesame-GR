@@ -832,7 +832,7 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                 BaseModel.initData();
                 BaseModel.initRpcRequest();
                 Log.record("加载完成");
-                Toast.show("芝麻粒加载成功");
+                Toast.show("芝麻粒GR加载成功:" + modelVersion);//CHANGE BY KT
             }
             offline = false;
             execHandler();
