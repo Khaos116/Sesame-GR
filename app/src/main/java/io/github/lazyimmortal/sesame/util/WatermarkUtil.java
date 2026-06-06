@@ -1,5 +1,7 @@
 package io.github.lazyimmortal.sesame.util;
 
+import io.github.lazyimmortal.sesame.BuildConfig;
+
 /**
  * 水印工具类
  * 通过JNI从native层获取水印配置信息
@@ -22,15 +24,18 @@ public class WatermarkUtil {
      * 获取水印文本内容
      * @return 水印文本
      */
+    private static final String mShowDefault = BuildConfig.VERSION_NAME + "  " + BuildConfig.BUILD_TIME;
     public static String getWatermarkText() {
         if (!isLibraryLoaded) {
-            return "免费模块 交流QQ群:694474777";
+            //return "免费模块 交流QQ群:694474777";
+            return mShowDefault;
         }
         try {
             return getWatermarkTextNative();
         } catch (UnsatisfiedLinkError e) {
             //Log.printStackTrace(e);
-            return "免费模块 交流QQ群:694474777";
+            //return "免费模块 交流QQ群:694474777";
+            return mShowDefault;
         }
     }
     
