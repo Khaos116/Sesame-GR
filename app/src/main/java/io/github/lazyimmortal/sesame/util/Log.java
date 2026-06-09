@@ -1,19 +1,18 @@
 package io.github.lazyimmortal.sesame.util;
 
-import com.elvishew.xlog.LogLevel;
-import com.elvishew.xlog.Logger;
-import com.elvishew.xlog.XLog;
+import com.elvishew.xlog.*;
 import com.elvishew.xlog.flattener.PatternFlattener;
 import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy;
 import com.elvishew.xlog.printer.file.clean.NeverCleanStrategy;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
-import io.github.lazyimmortal.sesame.model.normal.base.BaseModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import io.github.lazyimmortal.sesame.model.normal.base.BaseModel;
 
 public class Log {
 
@@ -116,6 +115,14 @@ public class Log {
         runtimeLogger.i(s);
     }
 
+    public static void runtime(String s) {
+        runtimeLogger.i(s);
+    }
+
+    public static void runtime(String TAG, String msg) {
+        runtime("[" + TAG + "]: " + msg);
+    }
+
     public static void i(String tag, String s) {
         i(tag + ", " + s);
     }
@@ -126,6 +133,10 @@ public class Log {
             return;
         }
         recordLogger.i(str);
+    }
+
+    public static void record(String TAG, String msg) {
+        record("[" + TAG + "]: " + msg);
     }
 
     public static void system(String tag, String s) {
@@ -156,6 +167,11 @@ public class Log {
         i(s);
     }
 
+    public static void error(String TAG, String msg) {
+        error("[" + TAG + "]: " + msg);
+        i("[" + TAG + "]: " + msg);
+    }
+
     public static void printStackTrace(Throwable t) {
         String str = android.util.Log.getStackTraceString(t);
         errorLogger.i(str);
@@ -165,6 +181,12 @@ public class Log {
     public static void printStackTrace(String tag, Throwable t) {
         String str = tag + ", " + android.util.Log.getStackTraceString(t);
         errorLogger.i(str);
+        i(str);
+    }
+
+    public static void printStackTrace(String TAG, String msg, Throwable th) {
+        String str = "[" + TAG + "] Throwable error: " + android.util.Log.getStackTraceString(th);
+        errorLogger.i(str + "[" + msg + "]");
         i(str);
     }
 
