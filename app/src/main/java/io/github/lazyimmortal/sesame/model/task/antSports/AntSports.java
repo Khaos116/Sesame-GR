@@ -872,8 +872,8 @@ public class AntSports extends ModelTask {
 
     private static void parseRewardsByJSONObjectData(JSONObject data) {
         try {
-            JSONArray treasureBoxList = data.getJSONArray("treasureBoxList");
-            openTreasureBox(treasureBoxList);
+            JSONArray treasureBoxList = data.optJSONArray("treasureBoxList");
+            if (treasureBoxList != null) openTreasureBox(treasureBoxList);
             if (data.has("brandRewardVOs")) {
                 JSONArray brandRewardVOs = data.getJSONArray("brandRewardVOs");
                 parseRewardsByJSONArrayRewards(brandRewardVOs, 1);
@@ -1077,7 +1077,7 @@ public class AntSports extends ModelTask {
                 return false;
             }
             JSONArray userExchangeRecords = jo.optJSONArray(MyUtils._OPT_USER_EXCHANGE_RECORDS);
-            if (userExchangeRecords.length() == 0) {
+            if (userExchangeRecords == null || userExchangeRecords.length() == 0) {
                 return true;
             }
             jo = userExchangeRecords.getJSONObject(0);
@@ -1931,7 +1931,7 @@ public class AntSports extends ModelTask {
                     continue;
                 }
 
-                String unit = "H1".equals(reward.getString("itemId")) ? "g" : "";
+                String unit = "H1".equals(reward.optString("itemId")) ? "g" : "";//CHANGE BY KT
                 String name = reward.getString("name");
                 rewardList.add(count + unit + name);
             }
@@ -2155,7 +2155,7 @@ public class AntSports extends ModelTask {
                     }
 
                     String benefitId = item.getString("benefitId");
-                    String itemId = item.getString("itemId");
+                    String itemId = item.optString("itemId");//CHANGE BY KT
                     String itemName = item.getString("itemName");
                     int remainCount = item.getInt("remainCount");
                     int cost = Integer.parseInt(item.getString("salePoint"));
