@@ -940,7 +940,7 @@ public class AntFarm extends ModelTask {
                     continue;
                 }
                 JSONObject bizInfo = new JSONObject(joItem.getString("bizInfo"));
-                String awardType = bizInfo.getString("awardType");
+                String awardType = bizInfo.optString("awardType");//CHANGE BY KT
                 ToolType toolType = ToolType.valueOf(awardType);
                 boolean isFull = false;
                 for (FarmTool farmTool : farmTools) {
@@ -1779,7 +1779,7 @@ public class AntFarm extends ModelTask {
     private Boolean receiveFarmTaskAward(JSONObject task) {
         try {
             String taskId = task.getString("taskId");
-            String awardType = task.getString("awardType");
+            String awardType = task.optString("awardType");//CHANGE BY KT
             int awardCount = task.getInt("awardCount");
             if (Objects.equals(awardType, "ALLPURPOSE")) {
                 if (awardCount + foodStock > foodStockLimit) {
@@ -2570,7 +2570,7 @@ public class AntFarm extends ModelTask {
                         if (MessageUtil.checkSuccess(TAG, joReceived)) {
                             int incAwardCount = joReceived.optInt("incAwardCount");
                             JSONObject taskConfigResultVO = joReceived.optJSONObject("taskConfigResultVO");
-                            String awardType = taskConfigResultVO.getString("awardType");
+                            String awardType = taskConfigResultVO == null ? "null" : taskConfigResultVO.optString("awardType");//CHANGE BY KT
                             Log.farm("小鸡乐园🎖️领取[" + title + "]奖励[" + awardType + "*" + incAwardCount + "]");
                         }
                     }
@@ -2831,7 +2831,7 @@ public class AntFarm extends ModelTask {
                 }
                 if (TaskStatus.FINISHED.name().equals(taskStatus)) {
                     String taskId = jo.getString("taskId");
-                    String awardType = jo.getString("awardType");
+                    String awardType = jo.optString("awardType");//CHANGE BY KT
                     receiveFarmDrawTaskAward(taskId, title, awardType, taskSceneCode);
                     continue;
                 }
@@ -2864,7 +2864,7 @@ public class AntFarm extends ModelTask {
                 }
                 TimeUtil.sleep(2000);
                 String taskId = jo.getString("taskId");
-                String awardType = jo.getString("awardType");
+                String awardType = jo.optString("awardType");//CHANGE BY KT
                 receiveFarmDrawTaskAward(taskId, title, awardType, taskSceneCode);
             }
         } catch (Throwable t) {
