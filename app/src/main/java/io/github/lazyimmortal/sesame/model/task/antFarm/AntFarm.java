@@ -1918,7 +1918,7 @@ public class AntFarm extends ModelTask {
                 if (MessageUtil.checkMemo(TAG, jo)) {
                     Log.farm("使用道具🎭[" + toolType.nickName() + "]#剩余" + (toolCount - 1) + "张");
                     return true;
-                } else if (Objects.equals("3D16", jo.getString("resultCode"))) {
+                } else if (Objects.equals("3D16", jo.optString("resultCode"))) {//CHANGE BY KT
                     Status.flagToday("farm::useFarmToolLimit::" + toolType);
                 }
                 break;
@@ -2201,7 +2201,7 @@ public class AntFarm extends ModelTask {
                 JSONObject orchardFoodMaterialStatus = jo.getJSONObject("orchardFoodMaterialStatus");
                 if ("FINISHED".equals(orchardFoodMaterialStatus.optString("foodStatus"))) {
                     jo = new JSONObject(AntFarmRpcCall.farmFoodMaterialCollect());
-                    if ("100".equals(jo.getString("resultCode"))) {
+                    if ("100".equals(jo.optString("resultCode"))) {//CHANGE BY KT
                         Log.farm("小鸡厨房👨🏻‍🍳农场食材#领取[" + jo.getInt("foodMaterialAddCount") + "g食材]");
                     } else {
                         Log.i(TAG, jo.toString());

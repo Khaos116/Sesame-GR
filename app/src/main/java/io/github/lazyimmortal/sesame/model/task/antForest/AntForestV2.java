@@ -1358,7 +1358,7 @@ public class AntForestV2 extends ModelTask {
                     return;
                 }
                 JSONObject jo = new JSONObject(rpcEntity.getResponseString());
-                String resultCode = jo.getString("resultCode");
+                String resultCode = jo.optString("resultCode");//CHANGE BY KT
                 if (!"SUCCESS".equalsIgnoreCase(resultCode)) {
                     if ("PARAM_ILLEGAL2".equals(resultCode)) {
                         Log.record("[" + username + "]" + "能量已被收取,取消重试 错误:" + jo.getString("resultDesc"));
@@ -2017,7 +2017,7 @@ public class AntForestV2 extends ModelTask {
                 TimeUtil.sleep(1500);
                 jo = new JSONObject(s);
 
-                String resultCode = jo.getString("resultCode");
+                String resultCode = jo.optString("resultCode");//CHANGE BY KT
                 switch (resultCode) {
                     case "SUCCESS":
                         //记录浇水次数
@@ -3392,7 +3392,7 @@ public class AntForestV2 extends ModelTask {
         try {
             String s = AntForestRpcCall.forFriendCollectEnergy(targetUserId, bubbleId);
             JSONObject jo = new JSONObject(s);
-            if ("SUCCESS".equals(jo.getString("resultCode"))) {
+            if ("SUCCESS".equals(jo.optString("resultCode"))) {//CHANGE BY KT
                 JSONArray jaBubbles = jo.getJSONArray("bubbles");
                 for (int i = 0; i < jaBubbles.length(); i++) {
                     jo = jaBubbles.getJSONObject(i);
