@@ -18,6 +18,13 @@ import okhttp3.*;
 public class GeminiAI implements AnswerAIInterface {
     private final String TAG = GeminiAI.class.getSimpleName();
 
+    // OkHttpClient 应作为单例共享，复用连接池与线程池，避免每次答题重复创建
+    private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
+            .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .build();
+
     private final String url = "https://api.genai.gd.edu.kg/google";
 
     private final String token;
@@ -55,14 +62,13 @@ public class GeminiAI implements AnswerAIInterface {
             // 必须开启 google_search，否则无法回答最新的常识题（如蚂蚁庄园）
             jsonReq.put("tools", new JSONArray().put(new JSONObject().put("google_search", new JSONObject())));
 
-            OkHttpClient client = new OkHttpClient();
             RequestBody body = RequestBody.create(jsonReq.toString(), MediaType.parse("application/json"));
 
             String modelName = "gemini-2.5-flash"; // 确保使用你刚才测通的模型
             String finalUrl = url + "/v1beta/models/" + modelName + ":generateContent?key=" + token;
 
             Request request = new Request.Builder().url(finalUrl).post(body).build();
-            response = client.newCall(request).execute();
+            response = CLIENT.newCall(request).execute();
 
             if (response.body() != null) {
                 String jsonStr = response.body().string();

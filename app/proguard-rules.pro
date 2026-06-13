@@ -9,6 +9,10 @@
 
 # Add any project specific keep options here:
 
+# 保留异常堆栈的源文件名与行号，方便排错
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
+
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
