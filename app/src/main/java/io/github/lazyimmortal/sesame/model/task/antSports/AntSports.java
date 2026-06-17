@@ -1840,7 +1840,8 @@ public class AntSports extends ModelTask {
             JSONObject jsonResult = new JSONObject(AntSportsRpcCall.build(branchId, mapId, multiNum));
             if (MessageUtil.checkSuccess(TAG, jsonResult)) {
                 JSONObject data = jsonResult.getJSONObject("data");
-                JSONObject endStageInfo = data.getJSONObject("endStageInfo");
+                JSONObject endStageInfo = data.optJSONObject("endStageInfo");
+                if (endStageInfo == null) return 0;//CHANGE BY KT
                 int buildingEnergyFinal = endStageInfo.optInt("buildingEnergyFinal");
                 String buildingId = endStageInfo.optString("buildingId");
                 int endbuildingEnergyProcess = endStageInfo.optInt("buildingEnergyProcess");
