@@ -1361,10 +1361,10 @@ public class AntForestV2 extends ModelTask {
                 String resultCode = jo.optString("resultCode");//CHANGE BY KT
                 if (!"SUCCESS".equalsIgnoreCase(resultCode)) {
                     if ("PARAM_ILLEGAL2".equals(resultCode)) {
-                        Log.record("[" + username + "]" + "能量已被收取,取消重试 错误:" + jo.getString("resultDesc"));
+                        Log.record("[" + username + "]" + "能量已被收取,取消重试 错误:" + jo.optString("resultDesc"));//CHANGE BY KT
                         return;
                     }
-                    Log.record("[" + username + "]" + jo.getString("resultDesc"));
+                    Log.record("[" + username + "]" + jo.optString("resultDesc"));//CHANGE BY KT
                     if (tryCount < tryCountInt) {
                         collectEnergyEntity.setNeedRetry();
                         collectEnergy(collectEnergyEntity, username);
@@ -2034,11 +2034,11 @@ public class AntForestV2 extends ModelTask {
                         wateredTimes = 3;
                         break label;
                     case "WATERING_USER_LIMIT":
-                        Log.record("好友浇水🚿给[" + UserIdMap.getMaskName(userId) + "]浇水，" + jo.getString("resultDesc"));
+                        Log.record("好友浇水🚿给[" + UserIdMap.getMaskName(userId) + "]浇水，" + jo.optString("resultDesc"));//CHANGE BY KT
                         wateredTimes = 3;//直接按照已达上限处理
                         break label;//CHANGE BY KT
                     default:
-                        Log.record("好友浇水🚿" + jo.getString("resultDesc"));
+                        Log.record("好友浇水🚿" + jo.optString("resultDesc"));//CHANGE BY KT
                         Log.i(jo.toString());
                         break;
                 }
@@ -3407,7 +3407,7 @@ public class AntForestV2 extends ModelTask {
                     Log.i("，UserID：" + targetUserId + "，BubbleId" + bubbleId);
                 }
             } else {
-                Log.record("[" + UserIdMap.getMaskName(targetUserId) + "]" + jo.getString("resultDesc"));
+                Log.record("[" + UserIdMap.getMaskName(targetUserId) + "]" + jo.optString("resultDesc"));//CHANGE BY KT
                 Log.i(s);
             }
         } catch (Throwable t) {
