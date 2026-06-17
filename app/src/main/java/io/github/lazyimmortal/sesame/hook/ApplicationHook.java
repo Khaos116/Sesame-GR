@@ -324,7 +324,7 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                                         FutureTask<Boolean> checkTask = new FutureTask<>(AntMemberRpcCall::check);
                                         Thread checkThread = new Thread(checkTask);
                                         checkThread.start();
-                                        if (!checkTask.get(10, TimeUnit.SECONDS)) {
+                                        if (!checkTask.get(30, TimeUnit.SECONDS)) {
                                             long waitTime = 10000 - System.currentTimeMillis() + lastExecTime;
                                             if (waitTime > 0) {
                                                 Thread.sleep(waitTime);
