@@ -10,11 +10,7 @@ import io.github.lazyimmortal.sesame.data.TokenConfig;
 import io.github.lazyimmortal.sesame.hook.Toast;
 import io.github.lazyimmortal.sesame.model.task.antSports.AntSportsRpcCall;
 import io.github.lazyimmortal.sesame.model.task.protectEcology.ProtectTreeRpcCall;
-import io.github.lazyimmortal.sesame.util.Log;
-import io.github.lazyimmortal.sesame.util.MessageUtil;
-import io.github.lazyimmortal.sesame.util.Status;
-import io.github.lazyimmortal.sesame.util.StringUtil;
-import io.github.lazyimmortal.sesame.util.TimeUtil;
+import io.github.lazyimmortal.sesame.util.*;
 import io.github.lazyimmortal.sesame.util.idMap.PathThemeMapListMap;
 
 public class ExtensionsHandle {
@@ -78,7 +74,7 @@ public class ExtensionsHandle {
     
     private static void getNewTreeItems() {
         try {
-            JSONObject jo = new JSONObject(ProtectTreeRpcCall.queryTreeItemsForExchange("COMING", "project"));
+            JSONObject jo = MyUtils.newJSONObject(ProtectTreeRpcCall.queryTreeItemsForExchange("COMING", "project"));
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return;
             }
@@ -106,7 +102,7 @@ public class ExtensionsHandle {
 
     private static void queryTreeForExchange(String projectId) {
         try {
-            JSONObject jo = new JSONObject(ProtectTreeRpcCall.queryTreeForExchange(projectId));
+            JSONObject jo = MyUtils.newJSONObject(ProtectTreeRpcCall.queryTreeForExchange(projectId));
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return;
             }
@@ -128,7 +124,7 @@ public class ExtensionsHandle {
 
     private static void getTreeItems() {
         try {
-            JSONObject jo = new JSONObject(ProtectTreeRpcCall.queryTreeItemsForExchange("AVAILABLE,ENERGY_LACK", "project"));
+            JSONObject jo = MyUtils.newJSONObject(ProtectTreeRpcCall.queryTreeItemsForExchange("AVAILABLE,ENERGY_LACK", "project"));
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return;
             }
@@ -150,7 +146,7 @@ public class ExtensionsHandle {
 
     private static void getTreeCurrentBudget(String projectId, String treeName) {
         try {
-            JSONObject jo = new JSONObject(ProtectTreeRpcCall.queryTreeForExchange(projectId));
+            JSONObject jo = MyUtils.newJSONObject(ProtectTreeRpcCall.queryTreeForExchange(projectId));
             if (MessageUtil.checkResultCode(TAG, jo)) {
                 JSONObject exchangeableTree = jo.getJSONObject("exchangeableTree");
                 int currentBudget = exchangeableTree.getInt("currentBudget");
@@ -165,7 +161,7 @@ public class ExtensionsHandle {
 
     private static void queryAreaTrees() {
         try {
-            JSONObject jo = new JSONObject(ProtectTreeRpcCall.queryAreaTrees());
+            JSONObject jo = MyUtils.newJSONObject(ProtectTreeRpcCall.queryAreaTrees());
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return;
             }
@@ -188,7 +184,7 @@ public class ExtensionsHandle {
 
     private static void getUnlockTreeItems() {
         try {
-            JSONObject jo = new JSONObject(ProtectTreeRpcCall.queryTreeItemsForExchange("", "project"));
+            JSONObject jo = MyUtils.newJSONObject(ProtectTreeRpcCall.queryTreeItemsForExchange("", "project"));
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return;
             }

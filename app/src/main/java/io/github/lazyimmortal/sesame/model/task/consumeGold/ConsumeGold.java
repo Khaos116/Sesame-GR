@@ -59,7 +59,7 @@ public class ConsumeGold extends ModelTask {
         boolean doubleCheck = false;
         try {
             String s = ConsumeGoldRpcCall.taskV2Index(taskSceneCode);
-            JSONObject jo = new JSONObject(s);
+            JSONObject jo = MyUtils.newJSONObject(s);
             if (jo.optBoolean("success")) {
                 JSONArray taskList = jo.optJSONArray(MyUtils._OPT_TASKLIST);
                 if (taskList == null) taskList = new JSONArray();
@@ -96,7 +96,7 @@ public class ConsumeGold extends ModelTask {
     private void taskV2TriggerReceive(String taskId, String name) {
         try {
             String s = ConsumeGoldRpcCall.taskV2TriggerReceive(taskId);
-            JSONObject jo = new JSONObject(s);
+            JSONObject jo = MyUtils.newJSONObject(s);
             if (jo.optBoolean("success")) {
                 int receiveAmount = jo.getInt("receiveAmount");
                 Log.other("赚消费金💰[" + name + "]#" + receiveAmount);
@@ -110,7 +110,7 @@ public class ConsumeGold extends ModelTask {
     private void taskV2TriggerSignUp(String taskId) {
         try {
             String s = ConsumeGoldRpcCall.taskV2TriggerSignUp(taskId);
-            JSONObject jo = new JSONObject(s);
+            JSONObject jo = MyUtils.newJSONObject(s);
             if (jo.optBoolean("success")) {
 
             }
@@ -123,7 +123,7 @@ public class ConsumeGold extends ModelTask {
     private void taskV2TriggerSend(String taskId) {
         try {
             String s = ConsumeGoldRpcCall.taskV2TriggerSend(taskId);
-            JSONObject jo = new JSONObject(s);
+            JSONObject jo = MyUtils.newJSONObject(s);
             if (jo.optBoolean("success")) {
 
             }
@@ -136,7 +136,7 @@ public class ConsumeGold extends ModelTask {
     private void consumeGoldIndex() {
         try {
             String s = ConsumeGoldRpcCall.consumeGoldIndex();
-            JSONObject jo = new JSONObject(s);
+            JSONObject jo = MyUtils.newJSONObject(s);
             if (jo.optBoolean("success")) {
                 JSONObject homePromoInfoDTO = jo.getJSONObject("homePromoInfoDTO");
                 JSONArray homePromoTokenDTOList = homePromoInfoDTO.getJSONArray("homePromoTokenDTOList");
@@ -151,7 +151,7 @@ public class ConsumeGold extends ModelTask {
                 }
                 if (tokenLeftAmount > 0) {
                     for (int j = 0; j < tokenLeftAmount; j++) {
-                        jo = new JSONObject(ConsumeGoldRpcCall.promoTrigger());
+                        jo = MyUtils.newJSONObject(ConsumeGoldRpcCall.promoTrigger());
                         if (jo.optBoolean("success")) {
                             JSONObject homePromoPrizeInfoDTO = jo.getJSONObject("homePromoPrizeInfoDTO");
                             int quantity = homePromoPrizeInfoDTO.getInt("quantity");
@@ -160,7 +160,7 @@ public class ConsumeGold extends ModelTask {
                                 JSONObject promoAdvertisementInfo = homePromoPrizeInfoDTO
                                         .getJSONObject("promoAdvertisementInfo");
                                 String outBizNo = promoAdvertisementInfo.getString("outBizNo");
-                                jo = new JSONObject(ConsumeGoldRpcCall.advertisement(outBizNo));
+                                jo = MyUtils.newJSONObject(ConsumeGoldRpcCall.advertisement(outBizNo));
                             }
                         }
                     }
@@ -178,12 +178,12 @@ public class ConsumeGold extends ModelTask {
                 return;
             }
             String s = ConsumeGoldRpcCall.signinCalendar();
-            JSONObject jo = new JSONObject(s);
+            JSONObject jo = MyUtils.newJSONObject(s);
             MyUtils.setSp功能异常(MyUtils._访问被拒绝3, jo);
             if (jo.optBoolean("success")) {
                 boolean signed = jo.getBoolean("isSignInToday");
                 if (!signed) {
-                    jo = new JSONObject(ConsumeGoldRpcCall.openBoxAward());
+                    jo = MyUtils.newJSONObject(ConsumeGoldRpcCall.openBoxAward());
                     if (jo.optBoolean("success")) {
                         int amount = jo.getInt("amount");
                         Log.other("消费金签到💰[" + amount + "金币]");

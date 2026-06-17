@@ -139,7 +139,7 @@ public class OldRpcBridge implements RpcBridge {
                                 } else if (msg.contains("MMTPException")) {
                                     try {
                                         String jsonString = "{\"resultCode\":\"FAIL\",\"memo\":\"MMTPException\",\"resultDesc\":\"MMTPException\"}";
-                                        rpcEntity.setResponseObject(new JSONObject(jsonString), jsonString);
+                                        rpcEntity.setResponseObject(MyUtils.newJSONObject(jsonString), jsonString);
                                         return rpcEntity;
                                     } catch (JSONException e) {
                                         Log.printStackTrace(e);
@@ -166,7 +166,7 @@ public class OldRpcBridge implements RpcBridge {
                 }
                 try {
                     String resultStr = (String) getResponseMethod.invoke(resp);
-                    JSONObject resultObject = new JSONObject(resultStr);
+                    JSONObject resultObject = MyUtils.newJSONObject(resultStr);
                     rpcEntity.setResponseObject(resultObject, resultStr);
                     if (resultObject.optString("memo", "").contains("系统繁忙")) {
                         ApplicationHook.setOffline(true);

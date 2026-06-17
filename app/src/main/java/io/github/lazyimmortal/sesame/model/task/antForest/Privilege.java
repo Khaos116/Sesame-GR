@@ -7,8 +7,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.lazyimmortal.sesame.util.Log;
-import io.github.lazyimmortal.sesame.util.Status;
+import io.github.lazyimmortal.sesame.util.*;
 
 import io.github.lazyimmortal.sesame.util.Status;
 import io.github.lazyimmortal.sesame.util.Log;
@@ -86,7 +85,7 @@ public class Privilege {
     private static JSONArray getForestTasks(String queryParam) {
         String response = AntForestRpcCall.queryTaskListV2(queryParam);
         try {
-            return new JSONObject(response).getJSONArray("forestTasksNew");
+            return MyUtils.newJSONObject(response).getJSONArray("forestTasksNew");
         } catch (JSONException e) {
             Log.error("获取任务列表失败" + e);
             return null;
@@ -152,7 +151,7 @@ public class Privilege {
     private static void handleYouthTaskAward(String taskType, String taskName, List<String> results) {
         try {
             String response = AntForestRpcCall.receiveTaskAwardV2(taskType);
-            JSONObject jsonResponse = new JSONObject(response);
+            JSONObject jsonResponse = MyUtils.newJSONObject(response);
             String resultDesc = jsonResponse.optString("desc");
             results.add(resultDesc);
             
@@ -191,7 +190,7 @@ public class Privilege {
         String response = AntForestRpcCall.studentQqueryCheckInModel();
         JSONObject result;
         try {
-            result = new JSONObject(response);
+            result = MyUtils.newJSONObject(response);
         } catch (JSONException e) {
             Log.error("学生签到模型解析失败" + e);
             return;
@@ -215,7 +214,7 @@ public class Privilege {
         try {
             String tag = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < SIGN_END_HOUR ? "double" : "single";
             String response = AntForestRpcCall.studentCheckin();
-            JSONObject result = new JSONObject(response);
+            JSONObject result = MyUtils.newJSONObject(response);
             handleSignInResult(result, tag);
         } catch (JSONException e) {
             Log.error("学生签到失败：" + e.getMessage());

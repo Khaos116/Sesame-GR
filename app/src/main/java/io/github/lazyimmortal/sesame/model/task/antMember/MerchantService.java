@@ -20,7 +20,7 @@ public class MerchantService {
             if (MyUtils.getSp功能异常(MyUtils._访问被拒绝1)) {
                 return false;
             }
-            JSONObject jo = new JSONObject(MerchantServiceRpcCall.transcodeCheck());
+            JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.transcodeCheck());
             MyUtils.setSp功能异常(MyUtils._访问被拒绝1, jo);
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return false;
@@ -36,13 +36,13 @@ public class MerchantService {
         if (Status.hasFlagToday("zcj::signIn")) {
             return;
         } try {
-            JSONObject jo = new JSONObject(MerchantServiceRpcCall.zcjSignInQuery());
+            JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.zcjSignInQuery());
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
             } jo = jo.getJSONObject("data").getJSONObject("button");
             // status: UNRECEIVED RECEIVED
             boolean signed = Objects.equals("RECEIVED", jo.getString("status")); if (!signed) {
-                jo = new JSONObject(MerchantServiceRpcCall.zcjSignInExecute());
+                jo = MyUtils.newJSONObject(MerchantServiceRpcCall.zcjSignInExecute());
                 if (MessageUtil.checkSuccess(TAG, jo)) {
                     jo = jo.getJSONObject("data"); int todayReward = jo.getInt("todayReward");
                     String widgetName = jo.getString("widgetName");
@@ -63,7 +63,7 @@ public class MerchantService {
             if (MyUtils.getSp功能异常(MyUtils._系统出错正在排查1)) {
                 return;
             }
-            JSONObject jo = new JSONObject(MerchantServiceRpcCall.taskListQueryV2());
+            JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.taskListQueryV2());
             MyUtils.setSp功能异常(MyUtils._系统出错正在排查1, jo);
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
@@ -110,7 +110,7 @@ public class MerchantService {
     private static void taskFinish(JSONObject task) {
         try {
             String bizId = task.getJSONObject("extendLog").getJSONObject("bizExtMap").getString("bizId");
-            JSONObject jo = new JSONObject(MerchantServiceRpcCall.taskFinish(bizId));
+            JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.taskFinish(bizId));
             if (MessageUtil.checkSuccess(TAG, jo)) {
                 String title = task.getString("title"); String reward = task.getString("reward");
                 Log.other("商家服务🏪[" + title + "]#获得[" + reward + "商家积分]");
@@ -137,7 +137,7 @@ public class MerchantService {
         if (actionCode == null) {
             return false;
         } try {
-            JSONObject jo = new JSONObject(MerchantServiceRpcCall.taskQueryByActionCode(actionCode));
+            JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.taskQueryByActionCode(actionCode));
             return MessageUtil.checkSuccess(TAG, jo);
         } catch (Throwable t) {
             Log.i(TAG, "taskQueryByActionCode err:"); Log.printStackTrace(TAG, t);
@@ -147,7 +147,7 @@ public class MerchantService {
     private static Boolean taskReceive(JSONObject task) {
         try {
             String taskCode = task.getString("taskCode");
-            JSONObject jo = new JSONObject(MerchantServiceRpcCall.taskReceive(taskCode));
+            JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.taskReceive(taskCode));
             return MessageUtil.checkSuccess(TAG, jo);
         } catch (Throwable t) {
             Log.i(TAG, "taskReceive err:"); Log.printStackTrace(TAG, t);
@@ -158,7 +158,7 @@ public class MerchantService {
         try {
             int count = task.getInt("target") - task.getInt("current");
             for (int i = 0; i < count; i++) {
-                JSONObject jo = new JSONObject(MerchantServiceRpcCall.taskActionProduce(actionCode));
+                JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.taskActionProduce(actionCode));
                 if (MessageUtil.checkSuccess(TAG, jo)) {
                     String title = task.getString("title");
                     Log.other("商家服务🏪完成[" + title + "]");
@@ -171,7 +171,7 @@ public class MerchantService {
 
     private static void ballQueryV1() {
         try {
-            JSONObject jo = new JSONObject(MerchantServiceRpcCall.ballQueryV1());
+            JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.ballQueryV1());
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
             } jo = jo.getJSONObject("data"); if (!jo.has("pointBalls")) {
@@ -188,7 +188,7 @@ public class MerchantService {
 
     private static void ballReceive(String ballId, String ballName) {
         try {
-            JSONObject jo = new JSONObject(MerchantServiceRpcCall.ballReceive(ballId));
+            JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.ballReceive(ballId));
             if (MessageUtil.checkSuccess(TAG, jo)) {
                 jo = jo.getJSONObject("data"); String pointReceived = jo.getString("pointReceived");
                 Log.other("商家服务🏪领取[" + ballName + "]#获得[" + pointReceived + "商家积分]");
@@ -206,12 +206,12 @@ public class MerchantService {
 
     private static void merchantKMDKSignIn() {
         try {
-            JSONObject jo = new JSONObject(MerchantServiceRpcCall.KMDKQueryActivity());
+            JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.KMDKQueryActivity());
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
             } if (Objects.equals("SIGN_IN_ENABLE", jo.getString("signInStatus"))) {
                 String activityNo = jo.getString("activityNo");
-                jo = new JSONObject(MerchantServiceRpcCall.KMDKSignIn(activityNo));
+                jo = MyUtils.newJSONObject(MerchantServiceRpcCall.KMDKSignIn(activityNo));
                 if (MessageUtil.checkResultCode(TAG, jo)) {
                     Log.other("商家服务🏪[开门打卡签到成功]");
                 }
@@ -226,7 +226,7 @@ public class MerchantService {
             return;
         } try {
             boolean hasSignUp = false; for (int i = 0; i < 5; i++) {
-                JSONObject jo = new JSONObject(MerchantServiceRpcCall.KMDKQueryActivity());
+                JSONObject jo = MyUtils.newJSONObject(MerchantServiceRpcCall.KMDKQueryActivity());
                 if (!MessageUtil.checkSuccess(TAG, jo)) {
                     continue;
                 } String activityNo = jo.getString("activityNo");
@@ -236,7 +236,7 @@ public class MerchantService {
                     Log.record("开门打卡今日已报名！"); hasSignUp = true; break;
                 } else if (Objects.equals("UN_SIGN_UP", jo.getString("signUpStatus"))) {
                     String activityPeriodName = jo.getString("activityPeriodName");
-                    jo = new JSONObject(MerchantServiceRpcCall.KMDKSignUp(activityNo));
+                    jo = MyUtils.newJSONObject(MerchantServiceRpcCall.KMDKSignUp(activityNo));
                     if (MessageUtil.checkSuccess(TAG, jo)) {
                         Log.other("商家服务🏪报名[" + activityPeriodName + "开门打卡]");
                         hasSignUp = true; break;

@@ -11,10 +11,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import io.github.lazyimmortal.sesame.util.Status;
+
+import io.github.lazyimmortal.sesame.util.*;
 import io.github.lazyimmortal.sesame.hook.Toast;
-import io.github.lazyimmortal.sesame.util.Log;
-import io.github.lazyimmortal.sesame.util.MessageUtil;
 import io.github.lazyimmortal.sesame.model.task.antForest.AntForestRpcCall;
 
 /**
@@ -69,7 +68,7 @@ public class WhackMole {
     }
     public static Boolean closeWhackMole() {
         try {
-            JSONObject jo = new JSONObject(AntForestRpcCall.closeWhackMole());
+            JSONObject jo = MyUtils.newJSONObject(AntForestRpcCall.closeWhackMole());
             return MessageUtil.checkSuccess(TAG, jo);
         }
         catch (Throwable t) {
@@ -147,7 +146,7 @@ public class WhackMole {
             
             // 1. 开始游戏 (使用 oldstartWhackMole)
             String startRespStr = AntForestRpcCall.oldstartWhackMole(SOURCE);
-            JSONObject response = new JSONObject(startRespStr);
+            JSONObject response = MyUtils.newJSONObject(startRespStr);
             if (!response.optBoolean("success")) {
                 Log.record(response.optString("resultDesc", "开始失败"));
                 return;
@@ -175,7 +174,7 @@ public class WhackMole {
             for (Long moleId : bubbleMoleIds) {
                 try {
                     String whackRespStr = AntForestRpcCall.oldwhackMole(moleId, token, SOURCE);
-                    JSONObject whackResp = new JSONObject(whackRespStr);
+                    JSONObject whackResp = MyUtils.newJSONObject(whackRespStr);
                     if (whackResp.optBoolean("success")) {
                         int energy = whackResp.optInt("energyAmount", 0);
                         hitCount++;
@@ -209,7 +208,7 @@ public class WhackMole {
             
             // 执行结算
             String settleRespStr = AntForestRpcCall.oldsettlementWhackMole(token, remainingIds, SOURCE);
-            JSONObject settleResp = new JSONObject(settleRespStr);
+            JSONObject settleResp = MyUtils.newJSONObject(settleRespStr);
             if (MessageUtil.checkSuccess(TAG, settleResp)) {
                 int total = settleResp.optInt("totalEnergy", 0);
                 Log.forest("森林能量⚡️[兼容模式完成(打" + (remainingIds.size() + hitCount) + "个)总能量+" + total + "g]");
@@ -280,7 +279,7 @@ public class WhackMole {
     private static GameSession startSingleRound(int round) {
         try {
             String startRespStr = AntForestRpcCall.startWhackMole();
-            JSONObject startResp = new JSONObject(startRespStr);
+            JSONObject startResp = MyUtils.newJSONObject(startRespStr);
             if (!MessageUtil.checkSuccess(TAG, startResp)) {
                 return null;
             }
@@ -306,7 +305,7 @@ public class WhackMole {
     private static int settleStandardRound(GameSession session) {
         try {
             String respStr = AntForestRpcCall.settlementWhackMole(session.getToken());
-            JSONObject resp = new JSONObject(respStr);
+            JSONObject resp = MyUtils.newJSONObject(respStr);
             if (MessageUtil.checkSuccess(TAG, resp)) {
                 return resp.optInt("totalEnergy", 0);
             }

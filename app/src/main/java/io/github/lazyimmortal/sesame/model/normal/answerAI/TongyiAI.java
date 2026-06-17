@@ -1,7 +1,6 @@
 package io.github.lazyimmortal.sesame.model.normal.answerAI;
 
-import io.github.lazyimmortal.sesame.util.JsonUtil;
-import io.github.lazyimmortal.sesame.util.Log;
+import io.github.lazyimmortal.sesame.util.*;
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,12 +39,12 @@ public class TongyiAI implements AnswerAIInterface {
         Response response = null;
         try {
             OkHttpClient client = new OkHttpClient().newBuilder().build();
-            JSONObject contentObject = new JSONObject();
+            JSONObject contentObject = MyUtils.newJSONObject();
             contentObject.put("role", "user");
             contentObject.put("content", text);
             JSONArray messageArray = new JSONArray();
             messageArray.put(contentObject);
-            JSONObject bodyObject = new JSONObject();
+            JSONObject bodyObject = MyUtils.newJSONObject();
             bodyObject.put("model", "qwen-turbo");
             bodyObject.put("messages", messageArray);
             String contentType = "application/json";
@@ -66,7 +65,7 @@ public class TongyiAI implements AnswerAIInterface {
                 Log.i("Tongyi接口异常：" + json);
                 return result;
             }
-            JSONObject jsonObject = new JSONObject(json);
+            JSONObject jsonObject = MyUtils.newJSONObject(json);
             result = JsonUtil.getValueByPath(jsonObject, "choices.[0].message.content");
         } catch (Throwable t) {
             Log.printStackTrace(TAG, t);

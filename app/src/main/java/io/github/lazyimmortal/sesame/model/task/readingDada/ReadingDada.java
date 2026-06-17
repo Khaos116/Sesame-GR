@@ -4,9 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import io.github.lazyimmortal.sesame.data.ModelGroup;
 import io.github.lazyimmortal.sesame.model.normal.answerAI.AnswerAI;
-import io.github.lazyimmortal.sesame.util.JsonUtil;
-import io.github.lazyimmortal.sesame.util.Log;
-import io.github.lazyimmortal.sesame.util.StringUtil;
+import io.github.lazyimmortal.sesame.util.*;
 
 /**
  * @author Constanline
@@ -33,7 +31,7 @@ public class ReadingDada {
                 outBizId = "";
             }
             String s = ReadingDadaRpcCall.getQuestion(activityId);
-            JSONObject jo = new JSONObject(s);
+            JSONObject jo = MyUtils.newJSONObject(s);
             if ("200".equals(jo.optString("resultCode"))) {//CHANGE BY KT
                 JSONArray jsonArray = jo.getJSONArray("options");
                 String answer = AnswerAI.getAnswer(jo.getString("title"), JsonUtil.jsonArrayToList(jsonArray));
@@ -41,7 +39,7 @@ public class ReadingDada {
                     answer = jsonArray.getString(0);
                 }
                 s = ReadingDadaRpcCall.submitAnswer(activityId, outBizId, jo.getString("questionId"), answer);
-                jo = new JSONObject(s);
+                jo = MyUtils.newJSONObject(s);
                 if ("200".equals(jo.optString("resultCode"))) {//CHANGE BY KT
                     Log.record("答题完成");
                     return true;

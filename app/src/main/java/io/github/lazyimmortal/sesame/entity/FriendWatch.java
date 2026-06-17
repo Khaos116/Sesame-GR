@@ -46,7 +46,7 @@ public class FriendWatch extends IdAndName {
         try {
             JSONObject joSingle = joFriendWatch.optJSONObject(id);
             if (joSingle == null) {
-                joSingle = new JSONObject();
+                joSingle = MyUtils.newJSONObject();
                 joSingle.put("name", UserIdMap.getMaskName(id));
                 joSingle.put("allGet", 0);
                 joSingle.put("startTime", TimeUtil.getDateStr());
@@ -98,20 +98,20 @@ public class FriendWatch extends IdAndName {
         try {
             String strFriendWatch = FileUtil.readFromFile(FileUtil.getFriendWatchFile());
             if (!strFriendWatch.isEmpty()) {
-                joFriendWatch = new JSONObject(strFriendWatch);
+                joFriendWatch = MyUtils.newJSONObject(strFriendWatch);
             } else {
-                joFriendWatch = new JSONObject();
+                joFriendWatch = MyUtils.newJSONObject();
             }
             return true;
         } catch (JSONException e) {
             Log.printStackTrace(e);
-            joFriendWatch = new JSONObject();
+            joFriendWatch = MyUtils.newJSONObject();
         }
         return false;
     }
 
     public static synchronized void unload() {
-        joFriendWatch = new JSONObject();
+        joFriendWatch = MyUtils.newJSONObject();
     }
 
     public static boolean needUpdateAll(long last) {
@@ -133,16 +133,16 @@ public class FriendWatch extends IdAndName {
         try {
             JSONObject joFriendWatch;
             if (StringUtil.isEmpty(strFriendWatch)) {
-                joFriendWatch = new JSONObject();
+                joFriendWatch = MyUtils.newJSONObject();
             } else {
-                joFriendWatch = new JSONObject(strFriendWatch);
+                joFriendWatch = MyUtils.newJSONObject(strFriendWatch);
             }
             Iterator<String> ids = joFriendWatch.keys();
             while (ids.hasNext()) {
                 String id = ids.next();
                 JSONObject friend = joFriendWatch.optJSONObject(id);
                 if (friend == null) {
-                    friend = new JSONObject();
+                    friend = MyUtils.newJSONObject();
                 }
                 String name = friend.optString("name");
                 FriendWatch friendWatch = new FriendWatch(id, name);
@@ -158,7 +158,7 @@ public class FriendWatch extends IdAndName {
             Log.i(TAG, "FriendWatch getList: ");
             Log.printStackTrace(TAG, t);
             try {
-                FileUtil.write2File(new JSONObject().toString(), FileUtil.getFriendWatchFile());
+                FileUtil.write2File(MyUtils.newJSONObject().toString(), FileUtil.getFriendWatchFile());
             } catch (Exception e) {
                 Log.printStackTrace(e);
             }

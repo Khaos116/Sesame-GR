@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -179,7 +180,7 @@ public class MyUtils {
     return Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
   }
 
-  public static JSONObject newJSONObject(String json) {
+  public static JSONObject newJSONObject(String json) throws JSONException {
     try {
       if (json == null || !json.startsWith("{")) {
         return new JSONObject();

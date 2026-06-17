@@ -3,8 +3,7 @@ package io.github.lazyimmortal.sesame.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.github.lazyimmortal.sesame.util.FileUtil;
-import io.github.lazyimmortal.sesame.util.Log;
+import io.github.lazyimmortal.sesame.util.*;
 import io.github.lazyimmortal.sesame.util.idMap.UserIdMap;
 
 import java.util.Objects;
@@ -39,20 +38,20 @@ public class RuntimeInfo {
         userId = UserIdMap.getCurrentUid();
         String content = FileUtil.readFromFile(FileUtil.runtimeInfoFile(userId));
         try {
-            joAll = new JSONObject(content);
+            joAll = MyUtils.newJSONObject(content);
         } catch (Exception ignored) {
-            joAll = new JSONObject();
+            joAll = MyUtils.newJSONObject();
         }
         try {
             if (!joAll.has(userId)) {
-                joAll.put(userId, new JSONObject());
+                joAll.put(userId, MyUtils.newJSONObject());
             }
         } catch (Exception ignored) {
         }
         try {
             joCurrent = joAll.getJSONObject(userId);
         } catch (Exception ignored) {
-            joCurrent = new JSONObject();
+            joCurrent = MyUtils.newJSONObject();
         }
     }
 

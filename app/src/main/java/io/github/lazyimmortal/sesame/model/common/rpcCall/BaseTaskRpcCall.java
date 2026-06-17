@@ -3,8 +3,7 @@ package io.github.lazyimmortal.sesame.model.common.rpcCall;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import io.github.lazyimmortal.sesame.hook.ApplicationHook;
-import io.github.lazyimmortal.sesame.util.JsonUtil;
-import io.github.lazyimmortal.sesame.util.Log;
+import io.github.lazyimmortal.sesame.util.*;
 
 /**
  * 公共任务处理
@@ -54,7 +53,7 @@ public class BaseTaskRpcCall {
     public static void doTask(String appletId, String tag, String name) {
         try {
             String s = taskQuery(appletId);
-            JSONObject jo = new JSONObject(s);
+            JSONObject jo = MyUtils.newJSONObject(s);
             if (!jo.optBoolean("success")) {
                 Log.i(tag + ".doTask.taskQuery", jo.optString("resultDesc"));
                 return;
@@ -74,7 +73,7 @@ public class BaseTaskRpcCall {
                 if ("TO_RECEIVE".equals(status)) {
                     //领取奖品，任务待领奖
                     s = taskTrigger(taskId, "receive", appletId);
-                    jo = new JSONObject(s);
+                    jo = MyUtils.newJSONObject(s);
                     if (!jo.optBoolean("success")) {
                         Log.i(tag + ".doTask.receive", jo.optString("resultDesc"));
                         continue;
@@ -82,7 +81,7 @@ public class BaseTaskRpcCall {
                 } else if ("NONE_SIGNUP".equals(status)) {
                     //没有报名的，先报名，再完成
                     s = taskTrigger(taskId, "signup", appletId);
-                    jo = new JSONObject(s);
+                    jo = MyUtils.newJSONObject(s);
                     if (!jo.optBoolean("success")) {
                         Log.i(tag + ".doTask.signup", jo.optString("resultDesc"));
                         continue;
@@ -91,7 +90,7 @@ public class BaseTaskRpcCall {
                 if ("SIGNUP_COMPLETE".equals(status) || "NONE_SIGNUP".equals(status)) {
                     //已报名，待完成，去完成
                     s = taskTrigger(taskId, "send", appletId);
-                    jo = new JSONObject(s);
+                    jo = MyUtils.newJSONObject(s);
                     if (!jo.optBoolean("success")) {
                         Log.i(tag + ".doTask.send", jo.optString("resultDesc"));
                         continue;

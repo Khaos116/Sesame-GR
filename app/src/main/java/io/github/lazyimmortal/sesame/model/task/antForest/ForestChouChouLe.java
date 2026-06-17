@@ -8,11 +8,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.github.lazyimmortal.sesame.hook.Toast;
-import io.github.lazyimmortal.sesame.util.Log;
-import io.github.lazyimmortal.sesame.util.MessageUtil;
-import io.github.lazyimmortal.sesame.util.Statistics;
-import io.github.lazyimmortal.sesame.util.Status;
-import io.github.lazyimmortal.sesame.util.TimeUtil;
+import io.github.lazyimmortal.sesame.util.*;
 import io.github.lazyimmortal.sesame.util.idMap.ForestHuntIdMap;
 import io.github.lazyimmortal.sesame.util.idMap.UserIdMap;
 
@@ -26,7 +22,7 @@ public class ForestChouChouLe {
             // String source = "task_entry";
             // String source = "guide";
             // String source = "forestchouchoule";
-            JSONObject resData = new JSONObject(AntForestRpcCall.enterDrawActivityopengreen("", "ANTFOREST_NORMAL_DRAW", "task_entry"));
+            JSONObject resData = MyUtils.newJSONObject(AntForestRpcCall.enterDrawActivityopengreen("", "ANTFOREST_NORMAL_DRAW", "task_entry"));
             if (!MessageUtil.checkSuccess(TAG, resData)) {
                 return;
             }
@@ -76,13 +72,13 @@ public class ForestChouChouLe {
        */
             do {
                 doublecheck = false;
-                JSONObject listTaskopengreen = new JSONObject(AntForestRpcCall.listTaskopengreen(sceneCode + "_TASK", "task_entry"));
+                JSONObject listTaskopengreen = MyUtils.newJSONObject(AntForestRpcCall.listTaskopengreen(sceneCode + "_TASK", "task_entry"));
                 if (MessageUtil.checkSuccess(TAG, listTaskopengreen)) {
                     JSONArray taskList = listTaskopengreen.getJSONArray("taskInfoList");
                     for (int i = 0; i < taskList.length(); i++) {
                         JSONObject taskInfo = taskList.getJSONObject(i);
                         JSONObject taskBaseInfo = taskInfo.getJSONObject("taskBaseInfo");
-                        JSONObject bizInfo = new JSONObject(taskBaseInfo.getString("bizInfo"));
+                        JSONObject bizInfo = MyUtils.newJSONObject(taskBaseInfo.getString("bizInfo"));
                         String taskName = bizInfo.getString("title");
 
                         String taskSceneCode = taskBaseInfo.getString("sceneCode");
@@ -96,7 +92,7 @@ public class ForestChouChouLe {
                         // 已完成任务领取奖励
                         if (taskStatus.equals("FINISHED")) {
                             TimeUtil.sleep(2000);
-                            JSONObject sginRes = new JSONObject(AntForestRpcCall.receiveTaskAwardopengreen("task_entry", taskSceneCode, taskType));
+                            JSONObject sginRes = MyUtils.newJSONObject(AntForestRpcCall.receiveTaskAwardopengreen("task_entry", taskSceneCode, taskType));
                             if (MessageUtil.checkSuccess(TAG, sginRes)) {
                                 int incAwardCount = sginRes.getInt("incAwardCount");
                                 Log.forest("森林寻宝🎖️[" + taskName + "]获得抽奖*" + incAwardCount);
@@ -115,7 +111,7 @@ public class ForestChouChouLe {
                             // if (!Status.hasFlagToday("Forest::" + sceneCode)) {
                             int forestHuntHelpTodayCount = Status.getforestHuntHelpToday(taskType);
                             if (forestHuntHelpTodayCount < shareIds.size()) {
-                                JSONObject prodPlayParam = new JSONObject(taskBaseInfo.getString("prodPlayParam"));
+                                JSONObject prodPlayParam = MyUtils.newJSONObject(taskBaseInfo.getString("prodPlayParam"));
                                 String p2pSceneCode = prodPlayParam.getString("p2pSceneCode");
                                 Log.forest("森林寻宝🎰️执行[" + drawScenename + "]助力好友[" + UserIdMap.getShowName(UserIdMap.getCurrentUid()) + "]");
                                 DoForestHuntHelp(shareIds, activityId, p2pSceneCode, taskType);
@@ -148,7 +144,7 @@ public class ForestChouChouLe {
                             //先判断活力值是否大于20
                             int totalVitalityAmount = 0;
                             try {
-                                JSONObject jo = new JSONObject(AntForestRpcCall.queryVitalityStoreIndex());
+                                JSONObject jo = MyUtils.newJSONObject(AntForestRpcCall.queryVitalityStoreIndex());
                                 if (!MessageUtil.checkResultCode(TAG, jo)) {
                                     return;
                                 }
@@ -167,7 +163,7 @@ public class ForestChouChouLe {
                                 continue;
                             }
                             //🏆
-                            JSONObject sginRes = new JSONObject(AntForestRpcCall.exchangeTimesFromTaskopengreen(activityId, sceneCode, "task_entry", taskSceneCode, taskType));
+                            JSONObject sginRes = MyUtils.newJSONObject(AntForestRpcCall.exchangeTimesFromTaskopengreen(activityId, sceneCode, "task_entry", taskSceneCode, taskType));
                             if (MessageUtil.checkSuccess(TAG, sginRes)) {
                                 int times = sginRes.getInt("times");
                                 Log.forest("森林寻宝🎖️[" + taskName + "]获得抽奖*" + times);
@@ -182,10 +178,10 @@ public class ForestChouChouLe {
                             // 调用对应完成接口
                             JSONObject result;
                             if (taskType.contains("XLIGHT")) {
-                                result = new JSONObject(AntForestRpcCall.finishTask4Chouchoule(taskType, taskSceneCode));
+                                result = MyUtils.newJSONObject(AntForestRpcCall.finishTask4Chouchoule(taskType, taskSceneCode));
                             }
                             else {
-                                result = new JSONObject(AntForestRpcCall.finishTaskopengreen(taskType, taskSceneCode));
+                                result = MyUtils.newJSONObject(AntForestRpcCall.finishTaskopengreen(taskType, taskSceneCode));
                             }
                             //检查并标记黑名单任务
                             MessageUtil.checkResultCodeAndMarkTaskBlackList("AntForestHuntTaskList", taskName,result);
@@ -201,13 +197,13 @@ public class ForestChouChouLe {
             
             // ==================== 执行抽奖 ====================
             if (ForestHuntDraw) {
-                JSONObject jo = new JSONObject(AntForestRpcCall.enterDrawActivityopengreen(activityId, sceneCode, "task_entry"));
+                JSONObject jo = MyUtils.newJSONObject(AntForestRpcCall.enterDrawActivityopengreen(activityId, sceneCode, "task_entry"));
                 if (MessageUtil.checkSuccess(TAG, jo)) {
                     JSONObject drawAsset = jo.getJSONObject("drawAsset");
                     int blance = drawAsset.getInt("blance");
                     
                     while (blance > 0) {
-                        jo = new JSONObject(AntForestRpcCall.drawopengreen(activityId, sceneCode, "task_entry", UserIdMap.getCurrentUid()));
+                        jo = MyUtils.newJSONObject(AntForestRpcCall.drawopengreen(activityId, sceneCode, "task_entry", UserIdMap.getCurrentUid()));
                         if (MessageUtil.checkSuccess(TAG, jo)) {
                             drawAsset = jo.getJSONObject("drawAsset");
                             blance = drawAsset.getInt("blance");
@@ -291,7 +287,7 @@ public class ForestChouChouLe {
     
     private String shareComponentRecall(String sceneCode, String shareId) {
         try {
-            JSONObject jo = new JSONObject(AntForestRpcCall.shareComponentRecall(sceneCode, shareId));
+            JSONObject jo = MyUtils.newJSONObject(AntForestRpcCall.shareComponentRecall(sceneCode, shareId));
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return "解析shareID失败";
             }
@@ -309,7 +305,7 @@ public class ForestChouChouLe {
     
     private String confirmShareRecall(String activityId, String p2pSceneCode, String shareId, String userId) {
         try {
-            JSONObject jo = new JSONObject(AntForestRpcCall.confirmShareRecall(activityId, p2pSceneCode, shareId, userId));
+            JSONObject jo = MyUtils.newJSONObject(AntForestRpcCall.confirmShareRecall(activityId, p2pSceneCode, shareId, userId));
             return jo.getString("desc");
         }
         catch (Throwable t) {

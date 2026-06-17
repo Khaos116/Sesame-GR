@@ -64,7 +64,7 @@ public class LibraryUtil {
                 canDoTask = false;
             }
             if (canDoTask) {
-                jo = new JSONObject(doFarmTaskRpc(bizKey));
+                jo = MyUtils.newJSONObject(doFarmTaskRpc(bizKey));
                 if ("SUCCESS".equals(jo.optString("memo"))) {
                     int awardCount = jo.optInt("awardCount");
                     if (TextUtils.equals("HEART_DONATION_ADVANCED_FOOD_V2", bizKey)) {
@@ -102,7 +102,7 @@ public class LibraryUtil {
         try {
             for (int i = 0; i < times; i++) {
                 String s = chouchouleDoFarmTask(bizKey);
-                JSONObject jo = new JSONObject(s);
+                JSONObject jo = MyUtils.newJSONObject(s);
                 if (jo.optBoolean("success", false)) {
                     sucCount++;
                     Log.farm("KT-庄园小鸡🧾️[完成:抽抽乐" + title + "]*" + sucCount);

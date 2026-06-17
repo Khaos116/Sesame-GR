@@ -3,8 +3,7 @@ package io.github.lazyimmortal.sesame.model.task.antSports;
 import org.json.JSONObject;
 
 import io.github.lazyimmortal.sesame.hook.ApplicationHook;
-import io.github.lazyimmortal.sesame.util.Log;
-import io.github.lazyimmortal.sesame.util.MessageUtil;
+import io.github.lazyimmortal.sesame.util.*;
 
 public class AntSportsRpcCall {
     private static final String chInfo = "ch_appcenter__chsub_9patch", timeZone = "Asia/Shanghai", version = "3.0.1" + ".2", alipayAppVersion = "0.0.852", cityCode = "330100", appId = "2021002116659397";
@@ -165,7 +164,7 @@ public class AntSportsRpcCall {
     
     public static String queryPathName(String pathId) {
         try {
-            JSONObject jo = new JSONObject(queryPath(Log.getFormatDate(), pathId));
+            JSONObject jo = MyUtils.newJSONObject(queryPath(Log.getFormatDate(), pathId));
             if (MessageUtil.checkSuccess("queryPathName", jo)) {
                 jo = jo.getJSONObject("data").getJSONObject("path");
                 return jo.getString("name");

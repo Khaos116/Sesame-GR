@@ -9,9 +9,7 @@ import org.json.JSONObject;
 import io.github.lazyimmortal.sesame.entity.AlipayVersion;
 import io.github.lazyimmortal.sesame.entity.RpcEntity;
 import io.github.lazyimmortal.sesame.hook.ApplicationHook;
-import io.github.lazyimmortal.sesame.util.Log;
-import io.github.lazyimmortal.sesame.util.RandomUtil;
-import io.github.lazyimmortal.sesame.util.StringUtil;
+import io.github.lazyimmortal.sesame.util.*;
 import io.github.lazyimmortal.sesame.util.idMap.UserIdMap;
 
 import java.security.SecureRandom;
@@ -134,7 +132,7 @@ public class AntForestRpcCall {
     }
     
     public static String queryTaskList() {
-        return queryTaskList(new JSONObject());
+        return queryTaskList(MyUtils.newJSONObject());
     }
     
     public static String queryTaskList(JSONObject extend) {
@@ -386,7 +384,7 @@ public class AntForestRpcCall {
     
     public static String startWhackMole() throws JSONException
     {
-        JSONObject param = new JSONObject();
+        JSONObject param = MyUtils.newJSONObject();
         param.put("source", "senlinguangchangdadishu");
         return ApplicationHook.requestString(
                 "alipay.antforest.forest.h5.startWhackMole",
@@ -417,7 +415,7 @@ public class AntForestRpcCall {
             moleIdList.add(i);
         }
         
-        JSONObject param = new JSONObject();
+        JSONObject param = MyUtils.newJSONObject();
         param.put("moleIdList", new JSONArray(moleIdList));
         param.put("settlementScene", "NORMAL");
         param.put("source", "senlinguangchangdadishu");
@@ -637,7 +635,7 @@ public class AntForestRpcCall {
      * 森林抽抽乐-活动列表
      */
     public static String enterDrawActivityopengreen(String activityId, String sceneCode, String source) {
-        //JSONObject params = new JSONObject();
+        //JSONObject params = MyUtils.newJSONObject();
         //params.put("activityId", "2025060301");
         //params.put("requestType", "RPC");
         //params.put("sceneCode", "ANTFOREST_NORMAL_DRAW");
@@ -652,7 +650,7 @@ public class AntForestRpcCall {
      */
     public static String listTaskopengreen(String sceneCode, String source) {
         //        [{"requestType":"RPC","sceneCode":"ANTFOREST_NORMAL_DRAW_TASK","source":"task_entry"}]
-        //JSONObject params = new JSONObject();
+        //JSONObject params = MyUtils.newJSONObject();
         //params.put("requestType", "RPC");
         //params.put("sceneCode", sceneCode);
         //params.put("source", source);
@@ -665,7 +663,7 @@ public class AntForestRpcCall {
      * 森林抽抽乐-签到领取次数-访问即算签到，所以直接领取？？
      */
     public static String receiveTaskAwardopengreen(String source, String sceneCode, String taskType) {
-        //JSONObject params = new JSONObject();
+        //JSONObject params = MyUtils.newJSONObject();
         //params.put("ignoreLimit", true);
         //params.put("requestType", "RPC");
         //params.put("sceneCode", sceneCode);
@@ -686,7 +684,7 @@ public class AntForestRpcCall {
         //        [{"activityId":"2025060301","requestType":"RPC","sceneCode":"ANTFOREST_NORMAL_DRAW",
         //        "source":"task_entry","taskSceneCode":"ANTFOREST_NORMAL_DRAW_TASK",
         //        "taskType":"NORMAL_DRAW_EXCHANGE_VITALITY"}]
-       /* JSONObject params = new JSONObject();
+       /* JSONObject params = MyUtils.newJSONObject();
         params.put("activityId", activityId);
         params.put("requestType", "RPC");
         params.put("sceneCode", sceneCode);
@@ -709,7 +707,7 @@ public class AntForestRpcCall {
         // "sceneCode":"ANTFOREST_NORMAL_DRAW_TASK","source":"ADBASICLIB","taskType":"FOREST_NORMAL_DRAW_XLIGHT_1"}]
         //"_" + System.currentTimeMillis() + "_" + RandomUtil.getRandomString(8)
         String taskTypeRandom = taskType + "_" + System.currentTimeMillis() + "_" + RandomUtil.getRandomString(8);
-        /*JSONObject params = new JSONObject();
+        /*JSONObject params = MyUtils.newJSONObject();
         params.put("outBizNo", taskType + RandomUtil.getRandomTag());
         params.put("requestType", "RPC");
         params.put("sceneCode", sceneCode);
@@ -727,7 +725,7 @@ public class AntForestRpcCall {
     // "activityId":"20251024","requestType":"RPC","sceneCode":"ANTFOREST_ACTIVITY_DRAW","source":"chouchoule",
     // "userId":"2088842736213752"
     public static String drawopengreen(String activityId, String sceneCode, String source, String userId) {
-        /*JSONObject params = new JSONObject();
+        /*JSONObject params = MyUtils.newJSONObject();
         params.put("activityId", activityId);
         params.put("requestType", "RPC");
         params.put("sceneCode", sceneCode);
@@ -750,7 +748,7 @@ public class AntForestRpcCall {
         // "sceneCode":"ANTFOREST_NORMAL_DRAW_TASK","source":"task_entry","taskType":"FOREST_NORMAL_DRAW_ANTTODO"}]
         String taskTypeRandom = taskType + "_" + System.currentTimeMillis() + "_" + RandomUtil.getRandomString(8);
 
-        /*JSONObject params = new JSONObject();
+        /*JSONObject params = MyUtils.newJSONObject();
         params.put("outBizNo", taskType + RandomUtil.getRandomTag());
         params.put("requestType", "RPC");
         params.put("sceneCode", sceneCode);

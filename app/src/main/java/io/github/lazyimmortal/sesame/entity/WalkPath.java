@@ -10,6 +10,7 @@ import java.util.Set;
 
 import io.github.lazyimmortal.sesame.model.task.antSports.AntSportsRpcCall;
 import io.github.lazyimmortal.sesame.util.Log;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 import io.github.lazyimmortal.sesame.util.idMap.PathThemeMapListMap;
 
 public class WalkPath extends IdAndName {
@@ -33,7 +34,7 @@ public class WalkPath extends IdAndName {
         list = new ArrayList<>();
         try {
             String result = AntSportsRpcCall.queryThemeList();
-            JSONObject jo = new JSONObject(result);
+            JSONObject jo = MyUtils.newJSONObject(result);
             JSONObject data = jo.optJSONObject("data");
             if (data != null) {
                 JSONArray themeList = data.optJSONArray("themeList");

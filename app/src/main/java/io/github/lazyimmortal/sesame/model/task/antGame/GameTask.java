@@ -4,6 +4,7 @@ import io.github.lazyimmortal.sesame.hook.AlipayMiniMarkHelper;
 import io.github.lazyimmortal.sesame.hook.ApplicationHook;
 import io.github.lazyimmortal.sesame.hook.AuthCodeHelper;
 import io.github.lazyimmortal.sesame.util.Log;
+import io.github.lazyimmortal.sesame.util.MyUtils;
 import io.github.lazyimmortal.sesame.util.idMap.UserIdMap;
 
 import org.json.JSONObject;
@@ -57,7 +58,7 @@ public enum GameTask {
             String mark = AlipayMiniMarkHelper.getAlipayMiniMark(appId, version);
             String reqId = System.currentTimeMillis() + "_" + new Random().nextInt(350) + 1;
 
-            JSONObject bodyJson = new JSONObject();
+            JSONObject bodyJson = MyUtils.newJSONObject();
             bodyJson.put("v", version);
             bodyJson.put("code", authCode);
             bodyJson.put("pf", "zfb");
@@ -96,7 +97,7 @@ public enum GameTask {
             conn.disconnect();
 
             // 解析响应JSON
-            JSONObject resJson = new JSONObject(responseText.toString());
+            JSONObject resJson = MyUtils.newJSONObject(responseText.toString());
             if (resJson.optInt("code") == 1) {
                 JSONObject data = resJson.optJSONObject("data");
                 if (data != null) {
@@ -157,7 +158,7 @@ public enum GameTask {
             String reqId = System.currentTimeMillis() + "_" + (new Random().nextInt(90) + 10); // 10-99随机数
 
             // 构建请求体
-            JSONObject bodyJson = new JSONObject();
+            JSONObject bodyJson = MyUtils.newJSONObject();
             bodyJson.put("v", version);
             bodyJson.put("version", version);
             bodyJson.put("reqId", reqId);
@@ -198,7 +199,7 @@ public enum GameTask {
             conn.disconnect();
 
             // 解析响应
-            JSONObject resJson = new JSONObject(responseText.toString());
+            JSONObject resJson = MyUtils.newJSONObject(responseText.toString());
             if (resJson.optInt("code") == 1) {
                 if (current % this.requestsPerEgg == 0) {
                     Log.other("游戏进度📈"+ gameType +"[" + current + "/" + total + "](达成" + (current/this.requestsPerEgg) + "个)");
