@@ -2178,7 +2178,7 @@ public class AntForestV2 extends ModelTask {
 
     private void queryCommonSign() {
         try {
-            JSONObject jo = new JSONObject(AntForestRpcCall.queryCommonSign("ANTFOREST_GIFT7TH_SIGN_202506"));
+            JSONObject jo = MyUtils.newJSONObject(AntForestRpcCall.queryCommonSign("ANTFOREST_GIFT7TH_SIGN_202506"));
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return;
             }
@@ -2202,7 +2202,7 @@ public class AntForestV2 extends ModelTask {
                 JSONObject extInfo = signRecord.getJSONObject("extInfo");
                 String awardName = extInfo.getString("awardName");
                 if (signKey.equals(currentSignKey) && !signRecord.getBoolean("signed")) {
-                    JSONObject joSign = new JSONObject(AntForestRpcCall.antiepSign(signId, UserIdMap.getCurrentUid(), sceneCode));
+                    JSONObject joSign = MyUtils.newJSONObject(AntForestRpcCall.antiepSign(signId, UserIdMap.getCurrentUid(), sceneCode));
                     TimeUtil.sleep(300); // 等待300毫秒
                     if (MessageUtil.checkSuccess(TAG + "森林7日签到:", joSign)) {
                         int continuousCount = joSign.getInt("continuousCount");
@@ -2413,7 +2413,7 @@ public class AntForestV2 extends ModelTask {
             if (sum == 50) {
                 Status.flagToday("EnergyRain::PlayGame");
             }
-            jo = new JSONObject(AntForestRpcCall.energyRainSettlement(sum, token));
+            jo = MyUtils.newJSONObject(AntForestRpcCall.energyRainSettlement(sum, token));
             if (MessageUtil.checkResultCode(TAG, jo)) {
                 Toast.show("获得了[" + sum + "g]能量[能量雨]");
                 Log.forest("收能量雨🌧️[" + sum + "g]#[" + UserIdMap.getShowName(UserIdMap.getCurrentUid()) + "]");
@@ -2656,7 +2656,7 @@ public class AntForestV2 extends ModelTask {
     //乐园限定活动
     private void queryOptionalPlay() {
         try {
-            JSONObject jo = new JSONObject(AntForestRpcCall.queryOptionalPlay());
+            JSONObject jo = MyUtils.newJSONObject(AntForestRpcCall.queryOptionalPlay());
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
             }
@@ -2684,7 +2684,7 @@ public class AntForestV2 extends ModelTask {
                 if (taskStatus.equals("FINISHED")) {
                     if (awardCountForReceive > 0) {
                         // 领取奖励
-                        JSONObject joReceived = new JSONObject(AntForestRpcCall.receiveTaskAwardopengreen(source, sceneCode, taskType));
+                        JSONObject joReceived = MyUtils.newJSONObject(AntForestRpcCall.receiveTaskAwardopengreen(source, sceneCode, taskType));
                         if (MessageUtil.checkSuccess(TAG, joReceived)) {
                             int incAwardCount = joReceived.optInt("incAwardCount");
                             JSONObject taskConfigResultVO = joReceived.optJSONObject("taskConfigResultVO");

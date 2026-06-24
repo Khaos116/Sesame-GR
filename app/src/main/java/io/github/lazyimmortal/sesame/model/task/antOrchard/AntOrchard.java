@@ -240,7 +240,7 @@ public class AntOrchard extends ModelTask {
     //乐园限定活动
     private void queryOptionalPlay() {
         try {
-            JSONObject jo = new JSONObject(AntOrchardRpcCall.queryOptionalPlay());
+            JSONObject jo = MyUtils.newJSONObject(AntOrchardRpcCall.queryOptionalPlay());
             if (!MessageUtil.checkSuccess(TAG, jo)) {
                 return;
             }
@@ -264,7 +264,7 @@ public class AntOrchard extends ModelTask {
                 String title = bizInfo.getString("title");
                 if (taskStatus.equals("FINISHED")) {
                     if (awardCountForReceive > 0) {
-                        JSONObject joReceived = new JSONObject(AntOrchardRpcCall.receiveTaskAwardantorchard(awardCountForReceive, sceneCode, taskType));
+                        JSONObject joReceived = MyUtils.newJSONObject(AntOrchardRpcCall.receiveTaskAwardantorchard(awardCountForReceive, sceneCode, taskType));
                         if (MessageUtil.checkSuccess(TAG, joReceived)) {
                             int incAwardCount = joReceived.optInt("incAwardCount");
                             JSONObject taskConfigResultVO = joReceived.optJSONObject("taskConfigResultVO");
@@ -602,7 +602,7 @@ public class AntOrchard extends ModelTask {
         try {
             String sceneName = scene.name();
             String result = AntOrchardRpcCall.switchPlantScene(sceneName);
-            return MessageUtil.checkResultCode(TAG, new JSONObject(result));
+            return MessageUtil.checkResultCode(TAG, MyUtils.newJSONObject(result));
         } catch (Throwable t) {
             Log.i(TAG, "switchPlantScene err:");
             Log.printStackTrace(TAG, t);

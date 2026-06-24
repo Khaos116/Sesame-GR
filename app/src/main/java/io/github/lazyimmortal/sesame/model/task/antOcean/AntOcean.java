@@ -1102,7 +1102,7 @@ public class AntOcean extends ModelTask {
     private boolean antfishQueryStatus() {
         try {
             String result = AntOceanRpcCall.antfishStatus();
-            JSONObject jo = new JSONObject(result);
+            JSONObject jo = MyUtils.newJSONObject(result);
 
             if (MessageUtil.checkResultCode(TAG, jo)) {
                 String fishStatus = jo.optString("fishStatus", "DEFAULT_AI_FISH");
@@ -1126,7 +1126,7 @@ public class AntOcean extends ModelTask {
     private void antfishQueryHomePage() {
         try {
             String result = AntOceanRpcCall.antfishHomepage();
-            JSONObject jo = new JSONObject(result);
+            JSONObject jo = MyUtils.newJSONObject(result);
 
             if (MessageUtil.checkResultCode(TAG, jo)) {
                 // 获取当前赛季信息
@@ -1204,7 +1204,7 @@ public class AntOcean extends ModelTask {
             String imgId = imgUrl.substring(imgUrl.indexOf("img/") + 4, imgUrl.indexOf("/original"));
             
             String result = AntOceanRpcCall.drawFish(imgId, imgUrl);
-            JSONObject jo = new JSONObject(result);
+            JSONObject jo = MyUtils.newJSONObject(result);
 
             if (MessageUtil.checkResultCode(TAG, jo)) {
                 Log.forest("开通摸鱼🐟提交画鱼成功");
@@ -1224,7 +1224,7 @@ public class AntOcean extends ModelTask {
     private void antfishHandleTasks() {
         try {
             String result = AntOceanRpcCall.antfishListTask();
-            JSONObject jo = new JSONObject(result);
+            JSONObject jo = MyUtils.newJSONObject(result);
 
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return;
@@ -1251,7 +1251,7 @@ public class AntOcean extends ModelTask {
                 String taskMode = taskBaseInfo.optString("taskMode", "");
 
                 // 解析 bizInfo
-                JSONObject bizInfo = new JSONObject(taskBaseInfo.optString("bizInfo", "{}"));
+                JSONObject bizInfo = MyUtils.newJSONObject(taskBaseInfo.optString("bizInfo", "{}"));
                 String taskTitle = bizInfo.optString("taskTitle", "未知任务");
 
                 // 解析任务奖励信息
@@ -1289,7 +1289,7 @@ public class AntOcean extends ModelTask {
     private boolean antfishFinishTask(String taskTitle, String taskType) {
         try {
             String result = AntOceanRpcCall.antfishFinishTask(taskType);
-            JSONObject jo = new JSONObject(result);
+            JSONObject jo = MyUtils.newJSONObject(result);
 
             if (MessageUtil.checkResultCode(TAG, jo)) {
                 Log.forest("摸鱼任务🐟完成[" + taskTitle + "]");
@@ -1311,7 +1311,7 @@ public class AntOcean extends ModelTask {
                 return false;
             }
             String result = AntOceanRpcCall.antfishReceiveTaskAward(taskType);
-            JSONObject jo = new JSONObject(result);
+            JSONObject jo = MyUtils.newJSONObject(result);
             if (!jo.optBoolean("success", false)) {
                 Log.record("领取海洋摸鱼[" + jo.optString("desc", "无返回结果") + "]今天不再执行");
                 Status.flagToday("Ocean::ANTAIFISH_TaskAward_Limitid");
@@ -1333,7 +1333,7 @@ public class AntOcean extends ModelTask {
         try {
             // 先查询主页获取剩余摸鱼次数
             String homeResult = AntOceanRpcCall.antfishHomepage();
-            JSONObject homeJo = new JSONObject(homeResult);
+            JSONObject homeJo = MyUtils.newJSONObject(homeResult);
 
             if (!MessageUtil.checkResultCode(TAG, homeJo)) {
                 return;
@@ -1367,7 +1367,7 @@ public class AntOcean extends ModelTask {
             int totalEnergy = 0;
             while (remainTouchChance > 0) {
                 String touchResult = AntOceanRpcCall.antfishTouchfish();
-                JSONObject touchJo = new JSONObject(touchResult);
+                JSONObject touchJo = MyUtils.newJSONObject(touchResult);
 
                 if (!MessageUtil.checkResultCode(TAG, touchJo)) {
                     Log.record("海洋摸鱼🐟摸鱼失败");

@@ -185,7 +185,7 @@ public class AntSports extends ModelTask {
             int hour = Integer.parseInt(Log.getFormatTime().split(":")[0]);
             //if (!Status.hasFlagToday("sport::syncStep")) {
             if (!Status.hasFlagToday("sport::syncStep") && hour >= earliestSyncStepTime.getValue()) {
-                JSONObject jo = new JSONObject(AntSportsRpcCall.queryWalkStep());
+                JSONObject jo = MyUtils.newJSONObject(AntSportsRpcCall.queryWalkStep());
                 if (!MessageUtil.checkResultCode(TAG, jo)) {
                     return;
                 }
