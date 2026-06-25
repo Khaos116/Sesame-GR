@@ -2153,7 +2153,7 @@ public class AntForestV2 extends ModelTask {
 
     private void vantiepSign() {
         try {
-            JSONObject jo = new JSONObject(AntForestRpcCall.queryTaskList());
+            JSONObject jo = MyUtils.newJSONObject(AntForestRpcCall.queryTaskList());
             if (!MessageUtil.checkResultCode(TAG, jo)) {
                 return;
             }

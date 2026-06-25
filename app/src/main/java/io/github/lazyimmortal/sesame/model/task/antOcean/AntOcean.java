@@ -249,7 +249,7 @@ public class AntOcean extends ModelTask {
 
             //初始化AntOceanFishBlackListMap
             if (antfishAutoTask) {
-                JSONObject jo = new JSONObject(AntOceanRpcCall.antfishListTask());
+                JSONObject jo = MyUtils.newJSONObject(AntOceanRpcCall.antfishListTask());
                     if (!MessageUtil.checkResultCode(TAG, jo)) {
                         return;
                     }
@@ -262,7 +262,7 @@ public class AntOcean extends ModelTask {
                         if (taskInfo == null) continue;
                         JSONObject taskBaseInfo = taskInfo.optJSONObject("taskBaseInfo");
                         if (taskBaseInfo == null) continue;
-                        JSONObject bizInfo = new JSONObject(taskBaseInfo.optString("bizInfo", "{}"));
+                        JSONObject bizInfo = MyUtils.newJSONObject(taskBaseInfo.optString("bizInfo", "{}"));
                         String taskTitle = bizInfo.getString("taskTitle");
                         AntOceanFishBlackListMap.add(taskTitle, taskTitle);
                     }
@@ -1318,7 +1318,7 @@ public class AntOcean extends ModelTask {
     private boolean rescueFish() {
         try {
             String result = AntOceanRpcCall.rescueFish();
-            JSONObject jo = new JSONObject(result);
+            JSONObject jo = MyUtils.newJSONObject(result);
             if (MessageUtil.checkResultCode(TAG, jo)) {
                 // 解析解救后的状态
                 JSONObject myFish = jo.optJSONObject("myFish");
