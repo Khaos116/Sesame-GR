@@ -1939,8 +1939,9 @@ public class AntSports extends ModelTask {
                     continue;
                 }
 
-                String unit = "H1".equals(reward.optString("itemId")) ? "g" : "";//CHANGE BY KT
-                String name = reward.optString("name");//CHANGE BY KT
+                String unit = "H1".equals(reward.optString("itemId")) ? "g" : "";
+                String name = reward.optString("name", "");
+                if (name.isEmpty()) continue;
                 rewardList.add(count + unit + name);
             }
         } catch (Exception e) {
