@@ -196,7 +196,7 @@ public class ForestChouChouLe {
                         // 处理浏览类游戏任务
                         if ((taskName.contains("玩") || desc.contains("浏览")) && taskStatus.equals("TODO")) {
                             TimeUtil.sleep(1000);
-                            JSONObject result = new JSONObject(AntForestRpcCall.finishTaskopengreen(taskType, taskSceneCode));
+                            JSONObject result = MyUtils.newJSONObject(AntForestRpcCall.finishTaskopengreen(taskType, taskSceneCode));
                             //检查并标记黑名单任务
                             MessageUtil.checkResultCodeAndMarkTaskBlackList("AntForestHuntTaskList", taskName,result);
                             if (MessageUtil.checkSuccess(TAG, result)) {

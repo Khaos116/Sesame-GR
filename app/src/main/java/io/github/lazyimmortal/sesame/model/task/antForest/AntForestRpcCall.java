@@ -137,11 +137,11 @@ public class AntForestRpcCall {
     }
 
     public static String batchQueryAndTouchopengreen() throws JSONException {
-        JSONObject args = new JSONObject();
-        JSONObject paramMap = new JSONObject();
-        paramMap.put("ANTFOREST_VITALITY_TASK#acc_task_energy_20g", new JSONObject());
-        paramMap.put("ANTFOREST_VITALITY_TASK#acc_task_energy_30g", new JSONObject());
-        paramMap.put("ANTFOREST_VITALITY_TASK#acc_task_energy_50g", new JSONObject());
+        JSONObject args = MyUtils.newJSONObject();
+        JSONObject paramMap = MyUtils.newJSONObject();
+        paramMap.put("ANTFOREST_VITALITY_TASK#acc_task_energy_20g", MyUtils.newJSONObject());
+        paramMap.put("ANTFOREST_VITALITY_TASK#acc_task_energy_30g", MyUtils.newJSONObject());
+        paramMap.put("ANTFOREST_VITALITY_TASK#acc_task_energy_50g", MyUtils.newJSONObject());
         args.put("paramMap", paramMap);
         args.put("requestType", "RPC");
         args.put("sceneCode", "ANTFOREST_VITALITY_TASK");

@@ -2963,7 +2963,7 @@ public class AntFarm extends ModelTask {
                     //完成浏览类游戏任务
                     if ((jo.optString("title").contains("玩"))&&jo.optString("desc").contains("玩") && jo.optString("desc").contains("s")) {
                         for (int j = 0; j < (rightsTimesLimit - rightsTimes); j++) {
-                            JSONObject jofinishTask = new JSONObject(AntFarmRpcCall.finishTask(jo.optString("taskId"), taskSceneCode));
+                            JSONObject jofinishTask = MyUtils.newJSONObject(AntFarmRpcCall.finishTask(jo.optString("taskId"), taskSceneCode));
                             //检查并标记黑名单任务
                             MessageUtil.checkResultCodeAndMarkTaskBlackList("AntFarmDrawMachineTaskList", title, jofinishTask);
                         }
