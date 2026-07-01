@@ -940,7 +940,7 @@ public class AntFarm extends ModelTask {
                     continue;
                 }
                 JSONObject bizInfo = MyUtils.newJSONObject(joItem.getString("bizInfo"));
-                String awardType = bizInfo.optString("awardType");//CHANGE BY KT
+                String awardType = bizInfo.optString("awardType");
                 ToolType toolType = ToolType.valueOf(awardType);
                 boolean isFull = false;
                 for (FarmTool farmTool : farmTools) {
@@ -2043,7 +2043,6 @@ public class AntFarm extends ModelTask {
                             // 好友自己的小鸡在家且饥饿 → 帮喂
                             if (AnimalInteractStatus.HOME.name().equals(animalInteractStatus)
                                 && AnimalFeedStatus.HUNGRY.name().equals(animalFeedStatus)) {
-                                Log.farm("feedFriendAnimal():"+friendFarmId+"-"+UserIdMap.getMaskName(userId));
                                 feedFriendAnimal(friendFarmId);
                             }
                             break;
@@ -2931,7 +2930,7 @@ public class AntFarm extends ModelTask {
                 }
                 if (TaskStatus.FINISHED.name().equals(taskStatus)) {
                     String taskId = jo.getString("taskId");
-                    String awardType = jo.optString("awardType");//CHANGE BY KT
+                    String awardType = jo.optString("awardType");
                     receiveFarmDrawTaskAward(taskId, title, awardType, taskSceneCode);
                     continue;
                 }
@@ -2952,7 +2951,7 @@ public class AntFarm extends ModelTask {
                         }
                         TimeUtil.sleep(1000);
                     }
-                    if (jo.optString("taskId").contains("SHANGYEHUA") || jo.optString("taskId").contains("30s")) {
+                    if (jo.optString("taskId").contains("SHANGYEHUA")) {
                         for (int j = 0; j < (rightsTimesLimit - rightsTimes); j++) {
                             JSONObject jofinishTask = MyUtils.newJSONObject(AntFarmRpcCall.finishTask(jo.optString("taskId"), taskSceneCode));
                             //检查并标记黑名单任务
@@ -2960,11 +2959,22 @@ public class AntFarm extends ModelTask {
                         }
                         TimeUtil.sleep(2000);
                     }
+
+                    //完成浏览类游戏任务
+                    if ((jo.optString("title").contains("玩"))&&jo.optString("desc").contains("玩") && jo.optString("desc").contains("s")) {
+                        for (int j = 0; j < (rightsTimesLimit - rightsTimes); j++) {
+                            JSONObject jofinishTask = new JSONObject(AntFarmRpcCall.finishTask(jo.optString("taskId"), taskSceneCode));
+                            //检查并标记黑名单任务
+                            MessageUtil.checkResultCodeAndMarkTaskBlackList("AntFarmDrawMachineTaskList", title, jofinishTask);
+                        }
+                        TimeUtil.sleep(2000);
+                    }
+
                     TimeUtil.sleep(1000);
                 }
                 TimeUtil.sleep(2000);
                 String taskId = jo.getString("taskId");
-                String awardType = jo.optString("awardType");//CHANGE BY KT
+                String awardType = jo.optString("awardType");
                 receiveFarmDrawTaskAward(taskId, title, awardType, taskSceneCode);
             }
         } catch (Throwable t) {
