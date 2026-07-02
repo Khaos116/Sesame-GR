@@ -549,6 +549,14 @@ public class FileUtil {
         return file;
     }
 
+    public static File getAntFishpondTaskListMapFile() {
+      File file = new File(MAIN_DIRECTORY_FILE, "AntFishpondTask.json");
+      if (file.exists() && file.isDirectory()) {
+        file.delete();
+      }
+      return file;
+    }
+
     public static File getAntOceanFishBlackListMapFile() {
         File file = new File(MAIN_DIRECTORY_FILE, "AntOceanFishBlack.json");
         if (file.exists() && file.isDirectory()) {
