@@ -26,6 +26,9 @@ public class AppConfig {
 
     private Boolean newUI = true;
     private Boolean languageSimplifiedChinese = true;
+    private Boolean enableFakeVersionSlider = false;
+    private String fakeVersionName = "10.6.58.8000";
+    private Long fakeVersionCode = 1881L;
 
     private static File getExternalFilesDir() {
         try {
