@@ -55,6 +55,9 @@ public class Status {
     
     // 保存时间
     private Long saveTime = 0L;
+
+    // 鱼塘独立执行间隔 - 上次执行时间
+    private Long fishLastExecTime = 0L;
     
     /**
      * 绿色经营，收取好友金币已完成用户
