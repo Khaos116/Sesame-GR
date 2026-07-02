@@ -122,11 +122,13 @@ public class TokenConfig {
     
     public static void saveDishImage(Map<String, String> dishImage) {
         if (!checkDishImage(dishImage)) {
+            Log.forest("光盘行动💿保存图片失败: 数据无效");
             return;
         }
         TokenConfig tokenConfig = INSTANCE;
         if (!tokenConfig.dishImageList.contains(dishImage)) {
             tokenConfig.dishImageList.add(dishImage);
+            Log.forest("光盘行动💿图片已保存, 当前共" + tokenConfig.dishImageList.size() + "组");
             save();
         }
     }
@@ -137,8 +139,44 @@ public class TokenConfig {
     }
     
     public static Boolean clearDishImage() {
+        int count = INSTANCE.dishImageList.size();
         TokenConfig.INSTANCE.dishImageList.clear();
+        Log.forest("光盘行动💿清空图片: 共清空" + count + "组");
+        Log.record("清空光盘图片: 共清空" + count + "组");
         return save();
+    }
+
+    public static Boolean writeDishImage(String beforeMealsId, String afterMealsId) {
+      if (beforeMealsId == null || afterMealsId == null ||
+          beforeMealsId.isEmpty() || afterMealsId.isEmpty()) {
+        Log.forest("光盘行动💿写入图片失败: ID为空");
+        Log.record("写入光盘图片失败: ID为空");
+        return false;
+      }
+      if (beforeMealsId.equals(afterMealsId)) {
+        Log.forest("光盘行动💿写入图片失败: 餐前餐后ID相同");
+        Log.record("写入光盘图片失败: 餐前餐后ID相同");
+        return false;
+      }
+
+      Map<String, String> dishImage = new HashMap<>();
+      dishImage.put("BEFORE_MEALS", beforeMealsId);
+      dishImage.put("AFTER_MEALS", afterMealsId);
+
+      Log.forest("光盘行动💿准备写入图片: 餐前=" + beforeMealsId + ", 餐后=" + afterMealsId);
+      Log.record("准备写入光盘图片: 餐前=" + beforeMealsId + ", 餐后=" + afterMealsId);
+      saveDishImage(dishImage);
+      return true;
+    }
+
+    public static Boolean writeDishImageWithRandomIds() {
+      // 生成随机ID
+      String beforeMealsId = java.util.UUID.randomUUID().toString().replace("-", "");
+      String afterMealsId = java.util.UUID.randomUUID().toString().replace("-", "");
+
+      Log.forest("光盘行动💿生成随机图片ID: 餐前=" + beforeMealsId + ", 餐后=" + afterMealsId);
+      Log.record("生成随机光盘图片ID: 餐前=" + beforeMealsId + ", 餐后=" + afterMealsId);
+      return writeDishImage(beforeMealsId, afterMealsId);
     }
     
     public static Boolean checkDishImage(Map<String, String> dishImage) {
