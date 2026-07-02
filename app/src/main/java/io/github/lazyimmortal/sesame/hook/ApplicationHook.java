@@ -62,6 +62,7 @@ import io.github.lazyimmortal.sesame.data.task.ModelTask;
 import io.github.lazyimmortal.sesame.entity.AlipayVersion;
 import io.github.lazyimmortal.sesame.entity.FriendWatch;
 import io.github.lazyimmortal.sesame.entity.RpcEntity;
+import io.github.lazyimmortal.sesame.hook.ext.VersionHook;
 import io.github.lazyimmortal.sesame.model.base.TaskCommon;
 import io.github.lazyimmortal.sesame.model.extensions.TestRpc;
 import io.github.lazyimmortal.sesame.model.normal.base.BaseModel;
@@ -112,6 +113,25 @@ public class ApplicationHook implements IXposedHookLoadPackage {
 
     @Getter
     private static AlipayVersion alipayVersion = new AlipayVersion("");
+
+    /** 真实支付宝版本号，用于日志显示（alipayVersion 可能被伪装替换） */
+    private static String realAlipayVersion = "";
+
+    /**
+     * 获取伪装后的版本号
+     * 当 VersionHook 开启时，返回伪装版本名欺骗服务器，
+     * 使其认为安装了低版本，从而避免高版本特有的拼图验证。
+     * 影响范围：RPC 请求版本号、滑块判断、日志显示、User-Agent 等。
+     */
+    public static String getEffectiveVersion() {
+      if (VersionHook.isVersionHookEnabled()) {
+        String fakeName = VersionHook.getFakeVersionName();
+        if (!fakeName.isEmpty()) {
+          return fakeName;
+        }
+      }
+      return alipayVersion.getVersionString();
+    }
 
     @Getter
     private static volatile boolean hooked = false;
@@ -185,7 +205,10 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     context = (Context) param.args[0];
-                    alipayVersion = new AlipayVersion(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName);
+                    // 先记录真实版本号，伪装开关判断延后到 Service.onCreate（此时配置文件可读）
+                    String pkgVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+                    realAlipayVersion = pkgVersion;
+                    alipayVersion = new AlipayVersion(pkgVersion);
                     try {
                         AlipayMiniMarkHelper.init(classLoader);
                         AuthCodeHelper.init(classLoader);
@@ -207,6 +230,14 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                     super.afterHookedMethod(param);
                 }
             });
+            // 注册版本伪装 Hook（通过 VersionHook 统一管理）
+            try {
+              VersionHook.initVersionHook();
+              Log.i(TAG, "hook getPackageInfo successfully");
+            } catch (Throwable t) {
+              Log.i(TAG, "hook getPackageInfo err:");
+              Log.printStackTrace(TAG, t);
+            }
             try {
                 XposedHelpers.findAndHookMethod("com.alipay.mobile.nebulaappproxy.api.rpc.H5AppRpcUpdate", classLoader, "matchVersion", classLoader.loadClass(ClassUtil.H5PAGE_NAME), Map.class, String.class, XC_MethodReplacement.returnConstant(false));
                 Log.i(TAG, "hook matchVersion successfully");
@@ -276,6 +307,20 @@ public class ApplicationHook implements IXposedHookLoadPackage {
 
                         Log.i(TAG, "Service onCreate");
                         context = appService.getApplicationContext();
+                        // 此时文件系统已就绪，加载配置并应用伪装版本
+                        io.github.lazyimmortal.sesame.data.AppConfig.load();
+                        // 同时加载 VersionHook 独立配置
+                        VersionHook.ensureVersionConfig(context);
+                        VersionHook.loadVersionConfig();
+                        VersionHook.setAlipayVersion(alipayVersion);
+                        boolean fakeEnabled = VersionHook.isVersionHookEnabled();
+                        if (fakeEnabled) {
+                          String fakeVer = VersionHook.getFakeVersionName();
+                          alipayVersion = new AlipayVersion(fakeVer);
+                          Log.record("实际支付宝版本 " + realAlipayVersion + "，已开启伪装版本过滑块（伪装为 " + fakeVer + "），启用自动过滑块验证");
+                        }
+                        // 根据（可能已伪装的）版本号初始化滑块验证
+                        initSimplePageManager();
                         //System.load(LibraryUtil.getLibSesamePath(context));//CHANGE BY KT
                         service = appService;
                         mainHandler = new Handler(Looper.getMainLooper());
@@ -288,7 +333,14 @@ public class ApplicationHook implements IXposedHookLoadPackage {
                                 if (!init) {
                                     return;
                                 }
-                                Log.record("应用版本：" + alipayVersion.getVersionString());
+                                String displayVersion = getEffectiveVersion();
+                                boolean fakeEnabled = VersionHook.isVersionHookEnabled();
+                                if (fakeEnabled) {
+                                  Log.record("应用版本：" + displayVersion + "（实际 " + realAlipayVersion + "，已伪装）");
+                                } else {
+                                  Log.record("应用版本：" + displayVersion);
+                                }
+                                //Log.record("应用版本：" + alipayVersion.getVersionString());
                                 Log.record("模块版本：" + modelVersion + "（交流更新QQ群：694474777）");
                                 String targetUid = getUserId();
                                 //Log.record("开始执行" + MyUtils.recordUserName(targetUid));
